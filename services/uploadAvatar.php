@@ -4,7 +4,7 @@
   *args : image (envoyé par POST )
   *result : true ou null si erreur.
   */
-  //require("lib/watchdog.php");
+  require("../lib/watchdog_service.php");
   require_once('../lib/DataLayer.class.php');
   require_once('../lib/common_service.php');
   require_once('../lib/img_utils.php');
@@ -23,8 +23,7 @@
     $flux_small = setFlux($small);
     $flux_large = setFlux($large);
     //stocker dans des flux temporaires puis dans la bdd
-    //$login = $_SESSION['ident']->login;
-    $login = 'mallani';
+    $login = $_SESSION['id'];
     $imageSpec = ['avatar_small'=>$flux_small,'avatar_large'=>$flux_large,'mimetype'=>$type];
     $data = new DataLayer();
     $res = $data->storeAvatar($imageSpec,$login);

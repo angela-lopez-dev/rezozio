@@ -163,6 +163,36 @@ EOD;
         $info = $stmt->fetch();
         return ($info && crypt($password, $info['password']) == $info['password']);
     }
+/** Crée un utilisateur, renvoie un booléen indiquant si l'opération
+*s'est bien passée. */
+    function createUser($login,$password,$pseudo){
+      $print = password_hash($password,CRYPT_BLOWFISH);
+      $sql =<<<EOD
+      insert into rezozio.users(login,password,pseudo)
+      select :login::text,:password,:pseudo
+      where not exists(select login from rezozio.users where login =:login::text);
+EOD;
+      $stmt = $this->connexion->prepare($sql);
+      $stmt->bindValue(':login',$login,PDO::PARAM_STR);
+      $stmt->bindValue(':password',$print,PDO::PARAM_STR);
+      $stmt->bindValue(':pseudo',$pseudo,PDO::PARAM_STR);
+      $stmt->execute();
+      return ($stmt->rowCount() == 1);
+    }
+
+    function findUsers($substring){
+    $sql = <<<EOD
+    select login,pseudo
+    from rezozio.user
+    where login
+    like :substring;
+EOD;
+    $stmt = $this->connexion->prepare($sql);
+    $stmt->bindValue(':substring',$substring.'%',PDO::PARAM_STR);
+    $stmt->execute();
+    $res = $stmt->fetchAll();
+    return $res;
+    }
 
 }
 ?>

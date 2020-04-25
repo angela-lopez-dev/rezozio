@@ -10,7 +10,7 @@ Services obligatoires:
 [x]getMessage.php
 [x]getAvatar.php
 [x]uploadAvatar.php /!\changer la valeur de $login qd le script de login/logout sera implémenté
-[]createUser.php
+[x]createUser.php
 []findUsers.php
 [x]login.php
 [x]logout.php

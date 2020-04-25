@@ -1,4 +1,8 @@
 <?php
+/**
+*args : login,$password
+*result : login de l'utilisateur connecté.
+*/
 set_include_path('..'.PATH_SEPARATOR);
 
 require_once('lib/common_service.php');
