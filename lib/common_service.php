@@ -21,5 +21,24 @@
  function produceResult($result){
     answer(['status'=>'ok','result'=>$result]);
  }
+/***** ***************IMG ******************/
+ function produceImgResult($result){
+   imgAnswer(["status"=>"ok","result"=>$result]);
+ }
+
+ function produceImgError($message){
+   imgAnswer(["status"=>"error","message"=>$message]);
+ }
+
+ function imgAnswer($reponse){
+   global $_FILES;
+   if(is_null($_FILES))
+     $reponse['args'] = [];
+   else {
+   $reponse['args'] = $_FILES['image'];
+   unset($reponse['args']['tmp_name']);
+   }
+   echo json_encode($reponse);
+ }
 
 ?>

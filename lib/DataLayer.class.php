@@ -85,35 +85,6 @@ EOD;
       return $res;
     }
 
-    /**prend en paramètre un identifiant d'utilisateur et
-    *une taille d'image ('small' ou 'large')
-    * et renvoie une table associative contenant deux clés:
-    *'data' : un flux ouvert en lecture sur les données
-    *'mimetype' : type mime (chaîne).
-    *ou false si l'identifiant est incorrect.
-    */
-    public function getAvatar($userId,$size){
-      if($size == 'large')
-        $sql = 'select avatar_large';
-      else
-        $sql = 'select avatar_small';
-      $sql .= <<<EOD
-      ,avatar_type
-      from rezozio.users
-      where users.login = :userId;
-EOD;
-    $stmt = $this->connexion->prepare($sql);
-    $stmt->bindValue(':userId',$userId,PDO::PARAM_STR);
-    $stmt->execute();
-    $stmt->bindColumn('avatar_type',$mimetype,PDO::PARAM_STR);
-    if($size =='large')
-      $stmt->bindColumn("avatar_large",$flux,PDO::PARAM_LOB);
-    else
-    $stmt->bindColumn("avatar_small",$flux,PDO::PARAM_LOB);
-    $res = $stmt->fetch();
-    $res = ($res)?['data'=>$flux,'mimetype'=>$mimetype]:$res;
-    return $res;
-    }
 
 /**  Enregistre un avatar pour l'utilisateur $userId
 * paramètre $imageSpec : un tableau associatif contenant trois clés :
@@ -122,12 +93,43 @@ EOD;
 * 'avatar_type' : type MIME (chaîne)
 * résultat : booléen indiquant si l'opération s'est bien passée
 */
+public function getAvatar($login,$size){
+  if($size == "small")
+    $sql = "select avatar_small";
+  else
+    $sql = "select avatar_large";
+  $sql .=<<<EOD
+  ,avatar_type
+  from rezozio.users
+  where login=:login;
+EOD;
+  $stmt = $this->connexion->prepare($sql);
+  $stmt->bindValue(':login',$login,PDO::PARAM_STR);
+  $stmt->execute();
+  $stmt->bindColumn('avatar_type',$mimetype,PDO::PARAM_STR);
+  if($size == "small")
+    $stmt->bindColumn('avatar_small',$flux,PDO::PARAM_LOB);
+  else
+    $stmt->bindColumn('avatar_large',$flux,PDO::PARAM_LOB);
+  $res = $stmt->fetch();
+  if($res)
+      return ['data'=>$flux,'mimetype'=>$mimetype];
+  else
+      return $res;
+}
 
-    public function storeAvatar($imgSpec,$userId)
-    {
-      $flux_small = $imgSpec['avatar_small'];
-      $flux_large = $imgSpec['avatar_large'];
-      $type = $imgSpec['avatar_type'];
+/**prend en paramètre un identifiant d'utilisateur et
+*une taille d'image ('small' ou 'large')
+* et renvoie une table associative contenant deux clés:
+*'data' : un flux ouvert en lecture sur les données
+*'mimetype' : type mime (chaîne).
+*ou false si l'identifiant est incorrect.
+*/
+    public function storeAvatar($imageSpec,$login)
+  {
+      $flux_small = $imageSpec['avatar_small'];
+      $flux_large = $imageSpec['avatar_large'];
+      $type = $imageSpec['mimetype'];
       $sql = <<<EOD
       update rezozio.users
       set avatar_type=:avatarType,
@@ -135,13 +137,31 @@ EOD;
           avatar_large=:avatarLarge
       where login =:userId;
 EOD;
-      $stmt = $this->connexion->prepare($sql);
-      $stmt->bindValue(':avatarType',$imgSpec['avatar_type']);
-      $stmt->bindValue(':avatarSmall',$imgSpec['avatar_small']);
-      $stmt->bindValue(':avatarLarge',$imgSpec['avatar_large']);
-      $stmt->bindValue(':userId',$userId);
-      $stmt->execute();
-      return($stmt->rowCount()==1);//quand l'opération s'est bien passée, une et une seule ligne est affectée.
+      $insertion = $this->connexion->prepare($sql);
+      $insertion->bindValue(":avatarType",$type,PDO::PARAM_STR);
+      $insertion->bindValue(":avatarSmall",$flux_small,PDO::PARAM_LOB);
+      $insertion->bindValue(":avatarLarge",$flux_large,PDO::PARAM_LOB);
+      $insertion->bindValue(":userId",$login,PDO::PARAM_STR);
+      $insertion->execute();
+      $res = ($insertion->rowCount()==1);
+      return $res;
+}
+/*
+    * Test d'authentification
+    * $login, $password : authentifiants
+    * résultat : un booléen indiquant si l'authentification a réussi.
+    */
+   function authentifier($login, $password){ // version password hash
+        $sql = <<<EOD
+        select password
+        from rezozio.users
+        where login = :login
+EOD;
+        $stmt = $this->connexion->prepare($sql);
+        $stmt->bindValue(':login', $login);
+        $stmt->execute();
+        $info = $stmt->fetch();
+        return ($info && crypt($password, $info['password']) == $info['password']);
     }
 
 }

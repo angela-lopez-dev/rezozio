@@ -1,40 +1,40 @@
 <?php
-  /**
-  *Mets l'image reçue aux dimensions 48*48 et 256*256 puis la stocke.
-  *args : image (fichier)
-  *requête via post uniquement
-  *réponse {true}*/
-  //require("../lib/watchdog_service.php");
-  require_once("../lib/common_service.php");
-  require_once("../lib/img_utils.php");
-  try{
-    $userId = $_SESSION['id'];
-    $data = new DataLayer();
-    //vérification de l'existence de l'image
-    if(!isset($_FILES['image'])){
-      produceError('Image manquante.');
-    }
-    //créer les images à partir du flux
-    $name = $_FILES['image']['tmp_name'];
-    $type = $FILES_['image']['type'];
-    $flux = fopen($name,'r');
-    $src = createImageFromStream($flux);
-    //redimensionner en 48*48 et 256*256
-    $small = resizeSquare(copyCenterSquare($src),IMG_SMALL);
-    $large = resizeSquare(copyCenterSquare($src),IMG_LARGE);
-    $fluxSmall = setFlux($small);
-    $fluxLarge = setFlux($large);
-    //stocker dans la base de données
-    $data->storeAvatar(['avatar_small'=>$fluxSmall,'avatar_large'=>$fluxLarge,'mimetype'=>'image/png'],$login);
-    //produire la réponse au format demandé
-    fclose($fluxSmall);
-    fclose($fluxLarge);
-    if($data)
-      produceResult(true);
-    else
-      produceError('L\'utilisateur demandé n\'existe pas.');
-  }catch(PDOException $e){
-    produceError($e->getMessage());
-  }
 
+  /**
+  *args : image (envoyé par POST )
+  *result : true ou null si erreur.
+  */
+  //require("lib/watchdog.php");
+  require_once('../lib/DataLayer.class.php');
+  require_once('../lib/common_service.php');
+  require_once('../lib/img_utils.php');
+
+  if(!isset($_FILES['image'])){
+    produceImgError("Impossible de changer l'avatar. Aucune image n'a été fournie.");
+    return;
+  }
+  try{
+    $name= $_FILES['image']['tmp_name'];
+    $type = $_FILES['image']['type'];
+    //convertir avatar en small et large
+    $image = createImageFromFile($name);
+    $small = copyResizeFromCenter($image,IMG_SMALL);
+    $large = copyResizeFromCenter($image,IMG_LARGE);
+    $flux_small = setFlux($small);
+    $flux_large = setFlux($large);
+    //stocker dans des flux temporaires puis dans la bdd
+    //$login = $_SESSION['ident']->login;
+    $login = 'mallani';
+    $imageSpec = ['avatar_small'=>$flux_small,'avatar_large'=>$flux_large,'mimetype'=>$type];
+    $data = new DataLayer();
+    $res = $data->storeAvatar($imageSpec,$login);
+    if($res)
+      produceImgResult(true);
+    else
+      produceImgError("Impossible de changer l'avatar. L'utilisateur n'existe pas.");
+  }
+  catch(PDOException $e){
+    produceImgError($e->getMessage());
+  }
+  //fclose($imageSpec['data']);
  ?>

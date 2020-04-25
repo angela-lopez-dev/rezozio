@@ -1,7 +1,7 @@
 <?php
 
 const IMG_SMALL = 48;
-const IMG_LARE = 256;
+const IMG_LARGE = 256;
 /*
  * Returns image ressource initialized with data from $stream (auto-detect format)
  */
@@ -22,32 +22,18 @@ const IMG_LARE = 256;
   }
 /**
 *prend en argument une ressource image et produit une
-*copie du plus grand carré possible au centre d'une nouvelle image*/
-  function copyCenterSquare($img)
-  {
-    $img_largeur = imagesx($img);
-    $img_hauteur = imagesy($img);
-    $sq_dim = greatestSquare($img_largeur,$img_hauteur);
-    $dst_img = imagecreatetruecolor($sq_dim,$sq_dim);
-    imagecopyresampled(
-      $dst_img,$img,
-      0,0,($img_largeur-$sq_dim)/2,($img_hauteur-$sq_dim)/2,
-      $sq_dim,$sq_dim,$img_largeur,$img_hauteur
-    );
-    return $dst_img;
-  }
+*copie du plus grand carré possible au centre d'une nouvelle image redimensionne au format $dimension*/
+function copyResizeFromCenter($img_src,$dimension){
+  
+  $largeur = imagesx($img_src);
+  $hauteur = imagesy($img_src);
+  $c = greatestSquare($largeur,$hauteur);
+  $imageCarre = imagecreatetruecolor($dimension,$dimension);
+  //met le plus grand carré possible dans img dst à partir de img src.
+  imagecopyresampled($imageCarre, $img_src, 0, 0, ($largeur-$c)/2, ($hauteur-$c)/2, $dimension, $dimension, $c, $c);
+  return $imageCarre;
+}
 
-  /**prend en argument une image carrée et lui fait prendre les dimensions
-  dst_dim*dst_dim*/
-  function resizeSquare($img,$dst_dim)
-  {
-    $src_dim = imagesx($img);
-    $dst_img = imagecreatetruecolor($dst_dim,$dst_dim);
-    imagecopyresampled($dst_img,$img,
-    0,0,0,0,
-    $dst_dim,$dst_dim,$src_dim,$src_dim);
-    return $dst_img;
-  }
 
   /**
   *prend en argument une ressource image et renvoie un flux sur cette image en png */

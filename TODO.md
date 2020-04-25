@@ -8,12 +8,12 @@ Services obligatoires:
 [x]getUser.php
 [x]getProfile.php
 [x]getMessage.php
-[x]getAvatar.php /!\ impossible de savoir si l'accès à l'avatar fonctionne sans uploadAvatar
-[]uploadAvatar.php
+[x]getAvatar.php
+[x]uploadAvatar.php /!\changer la valeur de $login qd le script de login/logout sera implémenté
 []createUser.php
 []findUsers.php
-[]login.php
-[]logout.php
+[x]login.php
+[x]logout.php
 []findMessages.php
 []findFollowedMessages.php
 []postMessage.php
@@ -22,7 +22,10 @@ Services obligatoires:
 []unfollow.php
 []getFollower.php
 []getSubscriptions.php
-
+****************************
+[].htacess
+[] droits d'accès
+****************************
 Services supplémentaires:
 []removeMessage.php
 []blockUser.php

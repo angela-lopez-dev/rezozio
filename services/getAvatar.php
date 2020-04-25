@@ -1,32 +1,37 @@
 <?php
-  /**
-  *args : userId(obligatoire),size(optionnel, default = 'small')
-  *reponse : l'avatar de l'utilisateur en cas de succès ou un
-  *message d'erreur json*/
+/**args : userId,size(optionnelle)
+*result : avatar ou erreur
+*/
   require_once("../lib/common_service.php");
-
+  require_once("../lib/RequestParameters.class.php");
   $args = new RequestParameters();
-  $args->defineNonEmptyString('userId');
-  $args->defineString('size',['default'=>'small']);
-
-  if($args->size != 'small' and $args->size != 'large'){
-    produceError('Argument invalide pour ce service : size doit être small ou large.');
+  $args->defineString("size",["default"=>"small"]);
+  $args->defineNonEmptyString("userId");
+  if(! $args->isValid()){
+    produceError("Arguments invalides pour ce service : ".implode(', ',$args->getErrorMessages()));
+    return;
+  }
+  if($args->size != "small" && $args->size != "large"){
+    produceError("Arguments invalides pour ce service: size doit être large ou small.");
     return;
   }
   try{
-  $data = new DataLayer();
-  $imgSpec = $data->getAvatar($args->userId,$args->size);
-  if(!$imgSpec){
-    produceError('Impossible de récupérer l\'avatar, cet utilisateur n\'existe pas.');
-    return;
-  }
-  $flux = $imgSpec['data'];
-  header("Content-Type: ".$imgSpec['mimetype']);
-  if(is_null($flux)) //l'utilisateur n'a pas d'avatar défini
-    $flux = fopen('../images/default.jpg','r');
-  fpassthru($flux);
-  exit();
-  }catch(PDOException $e){
+    $data = new DataLayer();
+    $imgSpec = $data->getAvatar($args->userId,$args->size);
+    if(!$imgSpec){
+      produceError("Impossible de récupérer l'avatar. L'utilisateur n'existe pas.");
+      return;
+    }
+      header("Content-Type: ".$imgSpec['mimetype']);
+      $flux = $imgSpec['data'];
+      if(is_null($flux)) //l'utilisateur n'a pas d'avatar défini
+        $flux = fopen('images/default.jpg','r');
+      fpassthru($flux);
+      fclose($flux);
+  }catch(PDOException $e)
+  {
     produceError($e->getMessage());
   }
+exit();
+
 ?>
