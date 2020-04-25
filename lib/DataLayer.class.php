@@ -179,13 +179,13 @@ EOD;
       $stmt->execute();
       return ($stmt->rowCount() == 1);
     }
-
+/** Trouve le ou les utilisateurs dont le login ou le pseudo commence par $substrin*/
     function findUsers($substring){
     $sql = <<<EOD
     select login,pseudo
-    from rezozio.user
+    from rezozio.users
     where login
-    like :substring;
+    like :substring or pseudo like :substring;
 EOD;
     $stmt = $this->connexion->prepare($sql);
     $stmt->bindValue(':substring',$substring.'%',PDO::PARAM_STR);

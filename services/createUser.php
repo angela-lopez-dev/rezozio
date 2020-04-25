@@ -2,6 +2,8 @@
 /**
 *args : userId(max 25 char),password,pseudo(max 25 char)
 *result : userId,pseudo*/
+  const MAX_USERID_LENGTH=25;
+  const MAX_PSEUDO_LENGTH=25;
   require_once('../lib/common_service.php');
   $args = new RequestParameters("post");
   $args->defineNonEmptyString('userId');
@@ -12,7 +14,7 @@
     produceError('Arguments invalides pour l\'accès au service.'.implode(', ',$args->getErrorMessages()));
     return;
   }
-  if(! (strlen($args->userId) < 25 && strlen($args->pseudo) < 25)){
+  if(! (strlen($args->userId) < MAX_USERID_LENGTH && strlen($args->pseudo) < MAX_PSEUDO_LENGTH)){
     produceError('Pseudo et/ou login trop long(s) : 24 caractères maximum.');
     return;
   }
