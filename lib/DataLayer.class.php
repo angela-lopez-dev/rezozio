@@ -215,5 +215,29 @@ EOD;
       return $res;
 
     }
+/** trouve les messages du fil de l'utilisateur $current filtrés par id et dans la limite de count*/
+    function findFollowedMessages($current,$before,$count){
+      $sql =<<<EOD
+      select id,author,content,datetime
+      from rezozio.messages join rezozio.subscriptions
+      on messages.author = subscriptions.target
+      where subscriptions.follower = :current
+EOD;
+    if($before != 0)
+      $sql.=<<<EOD
+      intersect select id,author,content,datetime
+      from rezozio.messages where id < :before
+EOD;
+    $sql.=(" limit :count;");
+    $stmt = $this->connexion->prepare($sql);
+    $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+    if($before != 0)
+      $stmt->bindValue(':before',$before,PDO::PARAM_STR);
+    $stmt->bindValue(':count',$count,PDO::PARAM_STR);
+    $stmt->execute();
+    $res = $stmt->fetchAll();
+    return $res;
+    }
+
 }
 ?>

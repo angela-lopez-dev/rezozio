@@ -19,8 +19,8 @@ Services obligatoires:
 []findUsers.php
 [x]login.php
 [x]logout.php
-[]findMessages.php
-[]findFollowedMessages.php
+[x]findMessages.php
+[x]findFollowedMessages.php
 []postMessage.php
 []setProfile.php
 []follow.php
