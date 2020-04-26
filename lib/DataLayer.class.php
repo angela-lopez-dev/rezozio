@@ -238,6 +238,22 @@ EOD;
     $res = $stmt->fetchAll();
     return $res;
     }
+    /*poste un message ($source) depuis le compte $current et renvoie l'id de message
+    *ou false si erreur.*/
+    function postMessage($source,$current){
+      $sql =<<<EOD
+      insert into rezozio.messages (content,author)
+      values(:source,:current)
+      returning id;
+EOD;
+    $stmt = $this->connexion->prepare($sql);
+    $stmt->bindValue(':source',$source,PDO::PARAM_STR);
+    $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+    $stmt->execute();
+    $res  = $stmt->fetch();
+    $res = (count($res)==1)?$res:false;
+    return $res;
+    }
 
 }
 ?>

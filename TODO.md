@@ -21,7 +21,7 @@ Services obligatoires:
 [x]logout.php
 [x]findMessages.php
 [x]findFollowedMessages.php
-[]postMessage.php
+[x]postMessage.php
 []setProfile.php
 []follow.php
 []unfollow.php

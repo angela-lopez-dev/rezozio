@@ -3,7 +3,6 @@
 *result: tableau de {messageid,author,pseudo,content,datetime
 */
 require_once('../lib/watchdog_service.php');
-require_once('../lib/DataLayer.class.php');
 require_once('../lib/common_service.php');
 
 $args = new RequestParameters();
