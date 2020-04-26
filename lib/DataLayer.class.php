@@ -281,6 +281,21 @@ EOD;
       $stmt->execute();
       return ($stmt->rowCount()==1);
     }
-
+/*Renvoie la liste des login et peudos des followers de l'utilisateur connecté ainsi
+*qu'un booléen indiquant si le suivi est réciproque*/
+    public function getFollowers($current){
+      $sql = <<<EOD
+      select users.login as "userId", users.pseudo, t2.follower is not null as "mutual"
+      from rezozio.subscriptions as t1
+      left join rezozio.subscriptions as t2 on t1.follower = t2.target and t2.follower = :target
+      join rezozio.users on login = t1.follower
+      where t1.target = :target
+EOD;
+      $stmt = $this->connexion->prepare($sql);
+      $stmt->bindValue(':target',$current,PDO::PARAM_STR);
+      $stmt->execute();
+      $res = $stmt->fetchAll();
+      return $res ;
+    }
 }
 ?>

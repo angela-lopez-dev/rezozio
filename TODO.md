@@ -26,7 +26,7 @@ Services obligatoires:
 []setProfile.php
 [x]follow.php
 [x]unfollow.php
-[]getFollower.php
+[x]getFollower.php
 []getSubscriptions.php
 ****************************
 [].htacess
