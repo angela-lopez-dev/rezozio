@@ -193,6 +193,27 @@ EOD;
     $res = $stmt->fetchAll();
     return $res;
     }
+/** trouve les messages filtrés par auteur, id de message et dans la limite de (count) messages*/
+    function findMessages($author,$before,$count){
+      $conditions = array();
+      if($author !== '')
+        array_push($conditions,"select * from rezozio.messages where author =:author ");
+      if($before != 0)
+        array_push($conditions,"select * from rezozio.messages where id < :before ");
+      $sql = implode(' intersect ',$conditions);
+      if(count($conditions)<1)
+        $sql = 'select * from rezozio.messages ';
+      $sql.="limit :count;";
+      $stmt = $this->connexion->prepare($sql);
+      if($author !== '')
+        $stmt->bindValue(':author',$author,PDO::PARAM_STR);
+      if($before != 0)
+        $stmt->bindValue(':before',$before,PDO::PARAM_INT);
+      $stmt->bindValue(':count',$count,PDO::PARAM_INT);
+      $stmt->execute();
+      $res = $stmt->fetchAll();
+      return $res;
 
+    }
 }
 ?>

@@ -1,3 +1,8 @@
+QUESTIONS:
+[]findMessages => valeur vide pour l'int ??
+REFACTOR:
+[]nettoyer codage $args (valeurs par défaut)
+[]trouver une solution plus pertinente pour la requête sql de findMessages
 BDD:
 [x]créer nouveau schéma rézozio
 Statique:
