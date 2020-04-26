@@ -151,7 +151,7 @@ EOD;
     * $login, $password : authentifiants
     * résultat : un booléen indiquant si l'authentification a réussi.
     */
-   function authentifier($login, $password){ // version password hash
+   public function authentifier($login, $password){ // version password hash
         $sql = <<<EOD
         select password
         from rezozio.users
@@ -165,7 +165,7 @@ EOD;
     }
 /** Crée un utilisateur, renvoie un booléen indiquant si l'opération
 *s'est bien passée. */
-    function createUser($login,$password,$pseudo){
+    public function createUser($login,$password,$pseudo){
       $print = password_hash($password,CRYPT_BLOWFISH);
       $sql =<<<EOD
       insert into rezozio.users(login,password,pseudo)
@@ -180,7 +180,7 @@ EOD;
       return ($stmt->rowCount() == 1);
     }
 /** Trouve le ou les utilisateurs dont le login ou le pseudo commence par $substrin*/
-    function findUsers($substring){
+    public function findUsers($substring){
     $sql = <<<EOD
     select login,pseudo
     from rezozio.users
@@ -194,7 +194,7 @@ EOD;
     return $res;
     }
 /** trouve les messages filtrés par auteur, id de message et dans la limite de (count) messages*/
-    function findMessages($author,$before,$count){
+    public function findMessages($author,$before,$count){
       $conditions = array();
       if($author !== '')
         array_push($conditions,"select * from rezozio.messages where author =:author ");
@@ -216,7 +216,7 @@ EOD;
 
     }
 /** trouve les messages du fil de l'utilisateur $current filtrés par id et dans la limite de count*/
-    function findFollowedMessages($current,$before,$count){
+    public function findFollowedMessages($current,$before,$count){
       $sql =<<<EOD
       select id,author,content,datetime
       from rezozio.messages join rezozio.subscriptions
@@ -240,7 +240,7 @@ EOD;
     }
     /*poste un message ($source) depuis le compte $current et renvoie l'id de message
     *ou false si erreur.*/
-    function postMessage($source,$current){
+    public function postMessage($source,$current){
       $sql =<<<EOD
       insert into rezozio.messages (content,author)
       values(:source,:current)
@@ -253,6 +253,33 @@ EOD;
     $res  = $stmt->fetch();
     $res = (count($res)==1)?$res:false;
     return $res;
+    }
+/*Permet à l'utilisateur current de suivre target, renvoie un booléen indiquant
+*si l'opération s'est bien passée.*/
+    public function follow($current,$target)
+    {
+      $sql =<<<EOD
+      insert into rezozio.subscriptions (follower,target)
+      values(:current,:target);
+EOD;
+      $stmt = $this->connexion->prepare($sql);
+      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+      $stmt->bindValue(':target',$target,PDO::PARAM_STR);
+      $stmt->execute();
+      return ($stmt->rowCount()==1);
+    }
+    /*Permet à l'utilisateur current d'unfollow target, renvoie un booléen indiquant
+    *si l'opération s'est bien passée.*/
+    public function unfollow($current,$target){
+      $sql = <<<EOD
+      delete from rezozio.subscriptions
+      where follower =:current and target =:target;
+EOD;
+      $stmt = $this->connexion->prepare($sql);
+      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+      $stmt->bindValue(':target',$target,PDO::PARAM_STR);
+      $stmt->execute();
+      return ($stmt->rowCount()==1);
     }
 
 }

@@ -3,6 +3,7 @@ QUESTIONS:
 REFACTOR:
 []nettoyer codage $args (valeurs par défaut)
 []trouver une solution plus pertinente pour la requête sql de findMessages
+[]vérifier test d'existence getUser (si user s'appelle 0 par exemple)
 BDD:
 [x]créer nouveau schéma rézozio
 Statique:
@@ -14,7 +15,7 @@ Services obligatoires:
 [x]getProfile.php
 [x]getMessage.php
 [x]getAvatar.php
-[x]uploadAvatar.php /!\changer la valeur de $login qd le script de login/logout sera implémenté
+[x]uploadAvatar.php
 [x]createUser.php
 []findUsers.php
 [x]login.php
@@ -23,8 +24,8 @@ Services obligatoires:
 [x]findFollowedMessages.php
 [x]postMessage.php
 []setProfile.php
-[]follow.php
-[]unfollow.php
+[x]follow.php
+[x]unfollow.php
 []getFollower.php
 []getSubscriptions.php
 ****************************
