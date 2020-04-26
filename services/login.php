@@ -24,8 +24,8 @@ if ( ! isset($_SESSION['id'])) {
       produceError("Les identifiants sont incorrects.");
       return;
     }
-    $_SESSION['id'] = $args->login;
-    produceResult($args->login);
+    $_SESSION['id'] = $res;
+    produceResult($res->userId);
 
 } else {
    produceError("L'utilisateur est déjà authentifié.");

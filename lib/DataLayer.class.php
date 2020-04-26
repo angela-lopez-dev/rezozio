@@ -1,6 +1,6 @@
 <?php
 require_once("db_parms.php");
-
+require_once("Identite.class.php");
 Class DataLayer{
     private $connexion;
     public function __construct(){
@@ -153,7 +153,7 @@ EOD;
     */
    public function authentifier($login, $password){ // version password hash
         $sql = <<<EOD
-        select password
+        select password,pseudo
         from rezozio.users
         where login = :login
 EOD;
@@ -161,7 +161,8 @@ EOD;
         $stmt->bindValue(':login', $login);
         $stmt->execute();
         $info = $stmt->fetch();
-        return ($info && crypt($password, $info['password']) == $info['password']);
+        $res =($info && crypt($password, $info['password']) == $info['password'])?new Identite($login,$info['pseudo']):false;
+        return $res;
     }
 /** Crée un utilisateur, renvoie un booléen indiquant si l'opération
 *s'est bien passée. */
@@ -177,7 +178,8 @@ EOD;
       $stmt->bindValue(':password',$print,PDO::PARAM_STR);
       $stmt->bindValue(':pseudo',$pseudo,PDO::PARAM_STR);
       $stmt->execute();
-      return ($stmt->rowCount() == 1);
+      $res =($stmt->rowCount() == 1)?new Identite($login,$pseudo):false;
+      return $res;
     }
 /** Trouve le ou les utilisateurs dont le login ou le pseudo commence par $substrin*/
     public function findUsers($substring){
@@ -296,6 +298,30 @@ EOD;
       $stmt->execute();
       $res = $stmt->fetchAll();
       return $res ;
+    }
+
+    public function setProfile($current,$pseudo,$description,$password){
+      $sql = "update rezozio.users set";
+      if($pseudo != '')
+        $sql.='pseudo = :pseudo,';
+      if($description != '')
+        $sql.='description = :description';
+      if($password != '')
+        $sql.='password = :password';
+      $sql.='where login = :current;';
+      $stmt = $this->connexion->prepare($sql);
+      if($pseudo != '')
+        $stmt->bindValue(':pseudo',$pseudo,PDO::PARAM_STR);
+      if($description != '')
+          $stmt->bindValue(':description',$description,PDO::PARAM_STR);
+      if($password!= ''){
+          $print = crypt($password,CRYPT_BLOWFISH);
+          $stmt->bindValue(':password',$print,PDO::PARAM_STR);
+      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+      }
+      $res = ($stmt->rowCount() == 1);
+      return $res;
+
     }
 }
 ?>

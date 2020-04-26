@@ -21,8 +21,9 @@
   try{
     $data = new DataLayer();
     $res = $data->createUser($args->userId,$args->password,$args->pseudo);
+    var_dump($res);
     if($res)
-      produceResult(["userId"=>$args->userId,"pseudo"=>$args->pseudo]);
+      produceResult(["userId"=>$res->userId,"pseudo"=>$res->pseudo]);
     else
       produceError("Un utilisateur avec ce login existe déjà.");
   }catch(PDOException $e)

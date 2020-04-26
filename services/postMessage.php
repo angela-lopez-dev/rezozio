@@ -6,7 +6,7 @@ require_once('../lib/common_service.php');
 const MAX_MESSAGE_LENGTH = 280;
 $args = new RequestParameters('post');
 $args->defineNonEmptyString('source');
-$userId = $_SESSION['id'];
+$userId = $_SESSION['id']->userId;
 if(!$args->isValid()){
   produceError('Arguments invalides pour l\'accès au service.'.implode(', ',$args->getErrorMessages()));
   return;

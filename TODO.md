@@ -4,6 +4,7 @@ REFACTOR:
 []nettoyer codage $args (valeurs par défaut)
 []trouver une solution plus pertinente pour la requête sql de findMessages
 []vérifier test d'existence getUser (si user s'appelle 0 par exemple)
+[]png par défaut pour toutes les images
 BDD:
 [x]créer nouveau schéma rézozio
 Statique:
@@ -17,7 +18,7 @@ Services obligatoires:
 [x]getAvatar.php
 [x]uploadAvatar.php
 [x]createUser.php
-[]findUsers.php
+[x]findUsers.php
 [x]login.php
 [x]logout.php
 [x]findMessages.php

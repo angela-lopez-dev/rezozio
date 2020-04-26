@@ -8,7 +8,7 @@ require_once('../lib/common_service.php');
 $args = new RequestParameters();
 $args->defineInt('before',['default'=>0,'min_range'=>0]);
 $args->defineInt('count',['default'=>15,'min_range'=>0]);
-$current = $_SESSION['id'];
+$current = $_SESSION['id']->userId;
 if(! $args->isValid()){
   produceError('Arguments invalides pour l\'accès au service.'.implode(', ',$args->getErrorMessages()));
   return;

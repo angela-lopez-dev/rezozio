@@ -23,7 +23,7 @@
     $flux_small = setFlux($small);
     $flux_large = setFlux($large);
     //stocker dans des flux temporaires puis dans la bdd
-    $login = $_SESSION['id'];
+    $login = $_SESSION['id']->userId;
     $imageSpec = ['avatar_small'=>$flux_small,'avatar_large'=>$flux_large,'mimetype'=>$type];
     $data = new DataLayer();
     $res = $data->storeAvatar($imageSpec,$login);
