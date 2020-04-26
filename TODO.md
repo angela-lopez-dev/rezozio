@@ -1,6 +1,7 @@
 QUESTIONS:
 []findMessages => valeur vide pour l'int ??
 REFACTOR:
+[]if($res) invalide => remplacer
 []nettoyer codage $args (valeurs par défaut)
 []trouver une solution plus pertinente pour la requête sql de findMessages
 []vérifier test d'existence getUser (si user s'appelle 0 par exemple)
@@ -24,18 +25,25 @@ Services obligatoires:
 [x]findMessages.php
 [x]findFollowedMessages.php
 [x]postMessage.php
-[]setProfile.php
+[x]setProfile.php
 [x]follow.php
 [x]unfollow.php
 [x]getFollower.php
-[]getSubscriptions.php
+[x]getSubscriptions.php
 ****************************
 [].htacess
 [] droits d'accès
 ****************************
 Services supplémentaires:
-[]removeMessage.php
+[x]deleteMessage.php
 []blockUser.php
+  * [x]créer blockages
+  * [x]créer blockUser()
+  * []modifier blockUser pour que ça soit affiché sur le profil
+  * []vérifier les blocks au moment de follow
+  * []vérifier les blocks au moment de voir les tweets
+  * []supprimer les blocks au moment de supprimer l'utilisateur
+[]deleteUser.php
 []stories
   []addToStory.php
   //story : table avec comme colonnes : img,mimetype,datetime,user.

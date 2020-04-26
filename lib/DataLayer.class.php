@@ -299,28 +299,73 @@ EOD;
       $res = $stmt->fetchAll();
       return $res ;
     }
-
+/** met à jour le pseudo, la description, et le mot de passe de l'utilisateur current*/
     public function setProfile($current,$pseudo,$description,$password){
-      $sql = "update rezozio.users set";
+      $sql = " update rezozio.users set ";
       if($pseudo != '')
-        $sql.='pseudo = :pseudo,';
+        $sql.=' pseudo = :pseudo, ';
       if($description != '')
-        $sql.='description = :description';
+        $sql.=' description = :description, ';
       if($password != '')
-        $sql.='password = :password';
-      $sql.='where login = :current;';
+        $sql.=' password = :password ';
+      $sql.=' where login = :current;';
+      var_dump($sql);
       $stmt = $this->connexion->prepare($sql);
       if($pseudo != '')
         $stmt->bindValue(':pseudo',$pseudo,PDO::PARAM_STR);
       if($description != '')
           $stmt->bindValue(':description',$description,PDO::PARAM_STR);
       if($password!= ''){
-          $print = crypt($password,CRYPT_BLOWFISH);
+          $print = password_hash($password,CRYPT_BLOWFISH);
           $stmt->bindValue(':password',$print,PDO::PARAM_STR);
-      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
       }
+      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+      $stmt->execute();
       $res = ($stmt->rowCount() == 1);
       return $res;
+
+    }
+    /**récupère les pseudo et login des utilisateurs auxquels l'utilisateur current est abonné */
+    public function getSubscriptions($current){
+      $sql =<<<EOD
+      select login,pseudo
+      from rezozio.users
+      join rezozio.subscriptions
+      on users.login = subscriptions.follower
+      where follower =:current;
+EOD;
+      $stmt = $this->connexion->prepare($sql);
+      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+      $stmt->execute();
+      $res = $stmt->fetchAll();
+      return $res;
+    }
+/* supprime un tweet de l'utilisateur courant et renvoie un booléen indiquant si l'opération s'est bien passée*/
+    public function deleteMessage($messageId,$current){
+      $sql = <<<EOD
+      delete from rezozio.messages
+      where id =:messageId and author = :current;
+EOD;
+      $stmt = $this->connexion->prepare($sql);
+      $stmt->bindValue(':messageId',$messageId,PDO::PARAM_INT);
+      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+      $stmt->execute();
+      return($stmt->rowCount()==1);
+    }
+
+/* ajoute une relation de blocage entre current (celui qui blocuqe) et target dans la table blockages
+* renvoie le login de  la cible en cas de succès ou false en cas d'échec*/
+    public function blockUser($current,$target){
+      $sql = <<<EOD
+      insert into rezozio.blockages(target,blocking)
+      values(:target,:current) returning target;
+EOD;
+    $stmt = $this->connexion->prepare($sql);
+    $stmt->bindValue(':current',$current);
+    $stmt->bindValue(':target',$target);
+    $stmt->execute();
+    $res = $stmt->fetch();
+    return $res;
 
     }
 }

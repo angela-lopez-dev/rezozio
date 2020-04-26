@@ -5,6 +5,5 @@ LOPEZ Angéla groupe 6.
 
 Difficultés rencontrées
 -----------------------
-* Difficultés techniques:
-  * Peut-être un détail mais l'application postman m'a été quasiment inutile car mon pc
-  ne supporte pas de la faire tourner. J'ai du remédier à cela en testant manuellement chaque service, ce qui a pris du temps.
+* test de validité utilisent if($res) => si un utilisateur ou un id vaut 0 ou '0'
+le test renverra faux => tout refaire.
