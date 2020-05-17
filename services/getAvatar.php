@@ -25,7 +25,7 @@
       header("Content-Type: ".$imgSpec['mimetype']);
       $flux = $imgSpec['data'];
       if(is_null($flux)) //l'utilisateur n'a pas d'avatar défini
-        $flux = fopen('images/default.jpg','r');
+        $flux = fopen('../images/default.jpg','r');
       fpassthru($flux);
       fclose($flux);
   }catch(PDOException $e)

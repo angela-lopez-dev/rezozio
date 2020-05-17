@@ -20,7 +20,7 @@ if ( ! isset($_SESSION['id'])) {
   }
     $data = new DataLayer();
     $res = $data->authentifier($args->login,$args->password);
-    if(!$res){
+    if($res === false){
       produceError("Les identifiants sont incorrects.");
       return;
     }

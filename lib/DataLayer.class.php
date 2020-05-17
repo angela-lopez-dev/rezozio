@@ -208,8 +208,11 @@ EOD;
     $res = $stmt->fetchAll();
     return $res;
     }
-/** trouve les messages filtrés par auteur, id de message et dans la limite de (count) messages*/
-    public function findMessages($author,$before,$count){
+/** trouve les messages filtrés par auteur, id de message et dans la limite de (count) messages
+ *renvoie false si l'utilisateur est bloqué.*/
+    public function findMessages($current,$author,$before,$count){
+      if($this->getBlockedStatus($current,$author))
+        return false;
       $conditions = array();
       if($author !== '')
         array_push($conditions,"select * from rezozio.messages where author =:author ");
@@ -312,30 +315,53 @@ EOD;
       $res = $stmt->fetchAll();
       return $res ;
     }
-/** met à jour le pseudo, la description, et le mot de passe de l'utilisateur current*/
+/*met à jour le pseudo d'un utilisateur*/
+    public function setPseudoFromProfile($current,$pseudo){
+      $sql =<<<EOD
+      update rezozio.users
+      set pseudo =:pseudo
+      where login =:current;
+EOD;
+    $stmt = $this->connexion->prepare($sql);
+    $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+    $stmt->bindValue(':pseudo',$pseudo,PDO::PARAM_STR);
+    $stmt->execute();
+    }
+/*met à jour la description d'un utilisateur*/
+    public function setDescriptionFromProfile($current,$description){
+      $sql =<<<EOD
+      update rezozio.users
+      set description =:description
+      where login =:current;
+EOD;
+    $stmt = $this->connexion->prepare($sql);
+    $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+    $stmt->bindValue(':description',$description,PDO::PARAM_STR);
+    $stmt->execute();
+
+    }
+/*met à jour le mot de passe d'un utilisateur */
+    public function setPasswordFromProfile($current,$password){
+      $sql =<<<EOD
+      update rezozio.users
+      set password =:password
+      where login =:current;
+EOD;
+    $print = password_hash($password,CRYPT_BLOWFISH);
+    $stmt = $this->connexion->prepare($sql);
+    $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+    $stmt->bindValue(':password',$print,PDO::PARAM_STR);
+    $stmt->execute();
+    }
+/** met à jour le pseudo, la description, et le mot de passe de l'utilisateur current
+*renvoie false si il y a eu une erreur*/
     public function setProfile($current,$pseudo,$description,$password){
-      $sql = " update rezozio.users set ";
-      if($pseudo != '')
-        $sql.=' pseudo = :pseudo, ';
-      if($description != '')
-        $sql.=' description = :description, ';
-      if($password != '')
-        $sql.=' password = :password ';
-      $sql.=' where login = :current;';
-      var_dump($sql);
-      $stmt = $this->connexion->prepare($sql);
-      if($pseudo != '')
-        $stmt->bindValue(':pseudo',$pseudo,PDO::PARAM_STR);
-      if($description != '')
-          $stmt->bindValue(':description',$description,PDO::PARAM_STR);
-      if($password!= ''){
-          $print = password_hash($password,CRYPT_BLOWFISH);
-          $stmt->bindValue(':password',$print,PDO::PARAM_STR);
-      }
-      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
-      $stmt->execute();
-      $res = ($stmt->rowCount() == 1);
-      return $res;
+      if($pseudo !== "")
+        $this->setPseudoFromProfile($current,$pseudo);
+      if($description !== "")
+        $this->setDescriptionFromProfile($pseudo,$description);
+      if($password !== "")
+        $this->setPasswordFromProfile($current,$password);
 
     }
     /**récupère les pseudo et login des utilisateurs auxquels l'utilisateur current est abonné */
@@ -344,7 +370,7 @@ EOD;
       select login,pseudo
       from rezozio.users
       join rezozio.subscriptions
-      on users.login = subscriptions.follower
+      on users.login = subscriptions.target
       where follower =:current;
 EOD;
       $stmt = $this->connexion->prepare($sql);
@@ -393,6 +419,63 @@ EOD;
       $stmt->execute();
       $res = $stmt->fetch();
       return $res;
+    }
+/* supprime les messages de l'utilisateur userId*/
+public function deleteMessagesFromUser($userId){
+  $sql = <<<EOD
+  delete from rezozio.messages
+  where author = :userId;
+EOD;
+$stmt = $this->connexion->prepare($sql);
+$stmt->bindValue(":userId",$userId,PDO::PARAM_STR);
+$stmt->execute();
+$res = ($stmt->rowCount() === 1);
+return $res;
+}
+/*supprime les souscriptions de l'utilisateur userId*/
+public function deleteSubscriptionsFromUser($userId){
+  $sql =<<<EOD
+  delete from rezozio.subscriptions
+  where follower =:userId or target =:userId;
+EOD;
+$stmt = $this->connexion->prepare($sql);
+$stmt->bindValue(":userId",$userId,PDO::PARAM_STR);
+$stmt->execute();
+$res = ($stmt->rowCount() === 1);
+return $res;
+
+}
+/* supprime les bloquages de l'utilisateur userId*/
+public function deleteBlockagesFromUser($userId){
+  $sql = <<<EOD
+  delete from rezozio.blockages
+  where blocking =:userId or target =:userId;
+EOD;
+$stmt = $this->connexion->prepare($sql);
+$stmt->bindValue(":userId",$userId,PDO::PARAM_STR);
+$stmt->execute();
+$res = ($stmt->rowCount() === 1);
+return $res;
+}
+
+/*supprime le compte de l'utilisateur userId */
+public function deleteProfileFromUser($userId){
+  $sql =<<<EOD
+        delete from rezozio.users
+        where login =:userId;
+EOD;
+        $stmt = $this->connexion->prepare($sql);
+        $stmt->bindValue(":userId",$userId,PDO::PARAM_STR);
+        $stmt->execute();
+        $res = ($stmt->rowCount() === 1);
+        return $res;
+}
+    /*supprime l'utilisateur userId et renvoie un booléen indiquant si l'opération s'est bien passée */
+    public function deleteUser($userId){
+      $this->deleteMessagesFromUser($userId);
+      $this->deleteSubscriptionsFromUser($userId);
+      $this->deleteBlockagesFromUser($userId);
+      return $this->deleteProfileFromUser($userId);
     }
 }
 ?>

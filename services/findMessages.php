@@ -4,6 +4,8 @@
 */
 require_once('../lib/DataLayer.class.php');
 require_once('../lib/common_service.php');
+require_once("../lib/session_start.php");
+$current = $_SESSION['id']->userId;
 $args = new RequestParameters();
 $args->defineString('author');
 $args->defineInt('before',['default'=>0,'min_range'=>0]);
@@ -15,12 +17,16 @@ if(! $args->isValid()){
 
 try{
   $data = new DataLayer();
-  if(! $data->getUser($args->author)){
+  if($data->getUser($args->author) === false and $args->author !== ""){
     produceError('Impossible de récupérer les messages, l\'utlisateur n\'existe pas.');
     return;
   }
-  $res = $data->findMessages($args->author,$args->before,$args->count);
-  produceResult($res);
+  $res = $data->findMessages($current,$args->author,$args->before,$args->count);
+  if($res === false){
+    produceError("Impossible de récupérer les messages, l'\utilisateur vous a bloqué.");
+    return;
+  }
+    produceResult($res);
 }catch(PDOException $e){
   produceError($e->getMessage());
 }

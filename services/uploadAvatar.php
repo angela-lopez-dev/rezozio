@@ -27,7 +27,7 @@
     $imageSpec = ['avatar_small'=>$flux_small,'avatar_large'=>$flux_large,'mimetype'=>$type];
     $data = new DataLayer();
     $res = $data->storeAvatar($imageSpec,$login);
-    if($res)
+    if($res === true)
       produceImgResult(true);
     else
       produceImgError("Impossible de changer l'avatar. L'utilisateur n'existe pas.");

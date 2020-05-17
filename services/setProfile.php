@@ -19,7 +19,7 @@ if($args->password =='' && $args->pseudo =='' && $args->description == ''){
 try{
 $data = new DataLayer();
 $res = $data->setProfile($user->userId,$args->pseudo,$args->description,$args->password);
-if($res)
+if($res !== false)
   produceResult($user);
 else
   //cas improbable où l'utilisateur supprime son compte et met à jour son profil en même temps.

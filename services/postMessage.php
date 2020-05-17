@@ -18,7 +18,7 @@ if(strlen($args->source)>MAX_MESSAGE_LENGTH){
 try{
   $data = new DataLayer();
   $res = $data->postMessage($args->source,$userId);
-  if($res)
+  if($res !== false )
     produceResult($res['id']);
   else
     produceError("Impossible de poster le message.");

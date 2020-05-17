@@ -22,7 +22,7 @@ try{
     return;
   }
   $res = $data->unfollow($userId,$args->target);
-  if(!$res)
+  if($res === false)
     produceError("L'utilisateur demandé n'est pas suivi par ce compte, impossible de se désabonner.");
   else
     produceResult(true);

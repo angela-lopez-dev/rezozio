@@ -17,7 +17,7 @@ try{
   }
   $data = new DataLayer();
   $reponse = $data->getProfile($args->userId,$current);
-  if($reponse)
+  if($reponse !== false)
     produceResult($reponse);
   else
     produceError('L\'utilisateur demandé n\'existe pas.');

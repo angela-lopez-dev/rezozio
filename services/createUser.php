@@ -21,8 +21,7 @@
   try{
     $data = new DataLayer();
     $res = $data->createUser($args->userId,$args->password,$args->pseudo);
-    var_dump($res);
-    if($res)
+    if($res !== false)
       produceResult(["userId"=>$res->userId,"pseudo"=>$res->pseudo]);
     else
       produceError("Un utilisateur avec ce login existe déjà.");
