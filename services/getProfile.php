@@ -4,7 +4,7 @@
   *reponse : {userId,pseudo,description,*followed,*isFollower} *optionnels
   */
   require_once("../lib/common_service.php");
-  require_once("../lib/watchdog_service.php");
+  require_once("../lib/session_start.php");
   //le service fonctionne en mode connecte ou non connecte mais il opère différement => pas de watchdog.
   $current = $_SESSION['id']->userId;
   $args = new RequestParameters();

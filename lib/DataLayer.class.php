@@ -77,8 +77,8 @@ EOD;
 
     /** prend en paramètre un identifiant de message et renvoie
      *les caractéristiques complètes du message (id,author,pseudo,content,datetime)
-     *ou false si l'id de message n'existe pas */
-    public function getMessage($messageId){
+     *ou false si l'id de message n'existe pas ou bien si l'utilisateur n'a pas la permission de le voir. */
+    public function getMessage($messageId,$current){
       $sql = <<<EOD
       select messages.id as "messageId",messages.author,users.pseudo,messages.content,messages.datetime
       from rezozio.messages join rezozio.users
@@ -89,7 +89,12 @@ EOD;
       $stmt->bindValue(':messageId',$messageId,PDO::PARAM_INT);
       $stmt->execute();
       $res = $stmt->fetch();
-      $res = ($res)?$res:false;
+      if(!is_null($current)){
+        print("il y a un utilisateur connecté ! ");
+        /* on vérifie que l'utilisateur n'est pas bloqué */
+        if($this->getBlockedStatus($current,$res['author']))
+          $res = false;
+      }
       return $res;
     }
 

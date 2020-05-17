@@ -1,4 +1,4 @@
-A PRECISER DANS LE README:
+A PRECISER DANS LE README:  
 []getProfile renvoie 2 paramètres de + que dans la spécification mais c'est pour une fonctionnalité supplémentaire  
 REFACTOR:  
 []if($res) invalide => remplacer  
@@ -39,9 +39,9 @@ Services supplémentaires:
 []blockUser.php  
   * [x]créer blockages  
   * [x]créer blockUser()  
-  * []modifier getUser pour que ça soit affiché sur le profil  
-  * []vérifier les blocks au moment de follow  
-  * []vérifier les blocks au moment de voir les tweets  
+  * [x]modifier getProfile pour que ça soit affiché sur le profil  
+  * [x]vérifier les blocks au moment de follow  
+  * [x]vérifier les blocks au moment de voir les tweets  
   * []supprimer les blocks au moment de supprimer l'utilisateur  
 []deleteUser.php  
 []stories  
