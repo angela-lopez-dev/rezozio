@@ -41,11 +41,19 @@ EOD;
        rezozio.users.login as "userId", users.pseudo, users.description,
        s1.target is not null as "followed",
 
-       s2.target is not null as "isFollower"
+       s2.target is not null as "isFollower",
+
+       s3.blocking is not null as "blocked",
+
+       s4.blocking is not null as "blockedYou"
        from rezozio.users
        left join rezozio.subscriptions as s1 on rezozio.users.login = s1.target and s1.follower = :current
 
        left join rezozio.subscriptions as s2 on rezozio.users.login = s2.follower and s2.target = :current
+
+       left join rezozio.blockages as s3 on rezozio.users.login = s3.target and s3.blocking = :current
+        left join rezozio.blockages as s4 on rezozio.users.login = s4.blocking and
+        s4.target = :current
        where rezozio.users.login = :userId
 EOD;
     }
@@ -367,6 +375,19 @@ EOD;
     $res = $stmt->fetch();
     return $res;
 
+    }
+/*renvoie un booléen indiquant si l'utilisateur current est bloqué par l'utilisateur userId */
+    public function getBlockedStatus($current,$userId){
+      $sql = <<<EOD
+      select target is not null as "blockedYou" from rezozio.blockages
+      where rezozio.blockages.blocking =:userId and rezozio.blockages.target =:current;
+EOD;
+      $stmt = $this->connexion->prepare($sql);
+      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+      $stmt->bindValue(':userId',$userId,PDO::PARAM_STR);
+      $stmt->execute();
+      $res = $stmt->fetch();
+      return $res;
     }
 }
 ?>

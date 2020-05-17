@@ -21,8 +21,12 @@ try{
     produceError("Impossible de s'abonner à l'utilisateur : le compte suiveur et suivi sont le même.");
     return;
   }
+  if($data->getBlockedStatus($userId,$args->target)){
+    produceError("Impossible de s'abooner à l'utilisateur. Ce compte vous a bloqué.");
+    return;
+  }
   $res = $data->follow($userId,$args->target);
-  if(!$res)
+  if($res === false)
     produceError("L'utilisateur demandé est déjà suivi, impossible de s'abonner une nouvelle fois.");
   else
     produceResult(true);
