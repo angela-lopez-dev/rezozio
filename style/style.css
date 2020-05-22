@@ -1,0 +1,24 @@
+#messages{
+  width : 80%;
+  margin:auto;
+  background-color : #dfebe8;
+}
+
+.message{
+  background-color: white;
+  padding:2%;
+  margin : 2%;
+}
+
+.author{
+  color : #54615f;
+}
+
+.pseudo{
+  color : #232928;
+}
+
+.profile_picture{
+  border-radius: 50%;
+  filter: drop-shadow(1px 1px 1px #54615f);
+}

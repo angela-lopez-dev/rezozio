@@ -1,6 +1,6 @@
 <?php
 /**args : author(défaut : vide), before(défaut : vide),count(défaut : 15)
-*result: tableau de {messageid,author,pseudo,content,datetime
+*result: tableau de {messageid,author,pseudo,content,datetime}
 */
 require_once('../lib/DataLayer.class.php');
 require_once('../lib/common_service.php');

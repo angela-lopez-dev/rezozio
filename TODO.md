@@ -1,9 +1,10 @@
 TO DO :  
 =======  
-
-REFACTOR:
+* accueil.php  
+[]designer architecture
+REFACTOR:  
+* BACKEND:  
 []stack overflow pr requetes cmplexes
-[]trouver une solution plus pertinente pour la requête sql de findMessages  
 []png par défaut pour toutes les images
 []implémenter une méthode plus simple pour supprimer un compte d'utilisateur.
 Statique:  
@@ -19,6 +20,7 @@ Services supplémentaires:
 [x]deleteMessage.php  
 [x]blockUser.php  
 [x]deleteUser.php
+[]tester la sécurité du mot de passe
 []stories  
   []addToStory.php  
   //story : table avec comme colonnes : img,mimetype,datetime,user.  

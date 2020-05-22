@@ -4,7 +4,7 @@
 *result : login de l'utilisateur connecté.
 */
 set_include_path('..'.PATH_SEPARATOR);
-
+require_once("lib/Identite.class.php");
 require_once('lib/common_service.php');
 require_once('lib/session_start.php');
 

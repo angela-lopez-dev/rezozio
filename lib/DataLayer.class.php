@@ -197,7 +197,7 @@ EOD;
 /** Trouve le ou les utilisateurs dont le login ou le pseudo commence par $substrin*/
     public function findUsers($substring){
     $sql = <<<EOD
-    select login,pseudo
+    select login as "userId",pseudo
     from rezozio.users
     where login
     like :substring or pseudo like :substring;
@@ -211,26 +211,22 @@ EOD;
 /** trouve les messages filtrés par auteur, id de message et dans la limite de (count) messages
  *renvoie false si l'utilisateur est bloqué.*/
     public function findMessages($current,$author,$before,$count){
-      if($this->getBlockedStatus($current,$author))
+      if($this->getBlockedStatus($current,$user))
         return false;
-      $conditions = array();
-      if($author !== '')
-        array_push($conditions,"select * from rezozio.messages where author =:author ");
-      if($before != 0)
-        array_push($conditions,"select * from rezozio.messages where id < :before ");
-      $sql = implode(' intersect ',$conditions);
-      if(count($conditions)<1)
-        $sql = 'select * from rezozio.messages ';
-      $sql.="limit :count;";
+      $sql =<<<EOD
+      select messages.author,messages.id,messages.datetime,messages.content,users.pseudo
+      from rezozio.messages join rezozio.users
+      on rezozio.messages.author = rezozio.users.login
+      where (:author = '' or author = :author)
+      and(:before=0 or id<:before)
+      limit :count;
+EOD;
       $stmt = $this->connexion->prepare($sql);
-      if($author !== '')
-        $stmt->bindValue(':author',$author,PDO::PARAM_STR);
-      if($before != 0)
-        $stmt->bindValue(':before',$before,PDO::PARAM_INT);
+      $stmt->bindValue(':author',$author,PDO::PARAM_STR);
+      $stmt->bindValue(':before',$before,PDO::PARAM_INT);
       $stmt->bindValue(':count',$count,PDO::PARAM_INT);
       $stmt->execute();
-      $res = $stmt->fetchAll();
-      return $res;
+      return $stmt->fetchAll();
 
     }
 /** trouve les messages du fil de l'utilisateur $current filtrés par id et dans la limite de count*/
