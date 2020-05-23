@@ -18,6 +18,7 @@ document.forms.form_login.addEventListener('submit',login);
 document.forms.form_signup.addEventListener('submit',signup);
 document.querySelector('#logout').addEventListener('click',logout);
 document.forms.search_bar.addEventListener('input',search);
+document.forms.search_bar.addEventListener('submit',goToProfile);
 }
 
 //passage en mode connecté

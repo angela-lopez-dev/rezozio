@@ -403,6 +403,18 @@ EOD;
     return $res;
 
     }
+/*débloque un utilisateur et renvoie un booléen indiquant si l'opération s'est bien passée*/
+    public function unblockUser($current,$target){
+      $sql=<<<EOD
+      delete from rezozio.blockages
+      where target=:target and blocking=:current;
+EOD;
+  $stmt = $this->connexion->prepare($sql);
+  $stmt->bindValue(':current',$current,PDO::PARAM_STR);
+  $stmt->bindValue(':target',$target,PDO::PARAM_STR);
+  $stmt->execute();
+  return ($stmt->rowCount()==1);
+    }
 /*renvoie un booléen indiquant si l'utilisateur current est bloqué par l'utilisateur userId */
     public function getBlockedStatus($current,$userId){
       $sql = <<<EOD

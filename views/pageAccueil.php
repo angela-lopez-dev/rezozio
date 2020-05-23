@@ -13,18 +13,21 @@ if(isset($user))
  <meta charset="UTF-8" />
  <title>Rezozio</title>
  <link rel ="stylesheet" type="text/css" href="style/style.css">
+ <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
  <script src="js/fetchUtils.js"></script>
  <script src="js/feed.js"></script>
  <script src ="js/gestion_log.js"></script>
  <script src="js/signup.js"></script>
  <script src="js/search.js"></script>
+ <script src="js/profile.js"></script>
 
 </head>
 <?php
   echo "<body $dataUser>";
 ?>
   <section>
-    <form action ="" method=POST id="search_bar">
+    <form action ="" method=POST id="search_bar" autocomplete="off">
+      <span class="search_bar_icon"><i class="fa fa search"></i></span>
       <input type ="text" name="searchedString" placeholder="rechercher"/></br>
       <button type="submit" name="valid">OK</button></br>
     </form>
@@ -55,12 +58,15 @@ if(isset($user))
   </section>
 
   <section class ="connecte">
-    <p>Vous êtes connecté ! </p>
     <button id="logout" name="logout">Se déconnecter</button></br>
     <div id ="logout_error">
     </div>
   </section>
   <section class ="stable">
+    <section>
+      <div id="userProfile"></div>
+    </section>
+
   <div id="messages">
   </div>
 </section>

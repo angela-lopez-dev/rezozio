@@ -1,9 +1,20 @@
 TO DO :  
 =======  
-* accueil.php  
-[]designer architecture
+FRONT END:
+[]consulter le profil d'un utilisateur
+[]flèche retour en arrière (??)
+[]css formulaires
+[]menu sidebar
+[]afficher liste abonnements
+[]afficher liste abonnés
 REFACTOR:  
+* FRONT END :  
+[] réparer l'autocomplete quand l'utilisateur tape vite;  
+[]fusionner les fonctions doublons js  
+[]automatiser les fonctions répétitives => itération sur l'objet avec un tableau d'ordre prédéfini pour les appendChild.  
+[]remplacer les instances uniques de class par des id  
 * BACKEND:  
+[]findMessages si author vide AUCUN FILTRE DU TOUT  
 []stack overflow pr requetes cmplexes
 []png par défaut pour toutes les images
 []implémenter une méthode plus simple pour supprimer un compte d'utilisateur.
@@ -21,6 +32,7 @@ Services supplémentaires:
 [x]blockUser.php  
 [x]deleteUser.php
 []tester la sécurité du mot de passe
+[]retweets
 []stories  
   []addToStory.php  
   //story : table avec comme colonnes : img,mimetype,datetime,user.  

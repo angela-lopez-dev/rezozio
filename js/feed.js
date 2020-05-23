@@ -1,6 +1,6 @@
-const MAX_NUMBER_MESSAGES = 15;
-function getUnfilteredFeed(){
-  fetchFromJson("services/findMessages.php",{method:'POST',body:{count:MAX_NUMBER_MESSAGES},credentials:'same-origin'})
+
+function getFeed(){
+  fetchFromJson("services/findMessages.php",{method:'POST',credentials:'same-origin'})
   .then(processFeed,errorFeed);
 }
 
@@ -13,7 +13,14 @@ function processFeed(answer){
 
 function getFilteredFeed(){
   console.log("récupération du feed personnalisé");
-  fetchFromJson("services/findFollowedMessages.php",{method:'POST',body:{count:MAX_NUMBER_MESSAGES},credentials:'same-origin'})
+  fetchFromJson("services/findFollowedMessages.php",{method:'POST',credentials:'same-origin'})
+  .then(processFeed,errorFeed);
+}
+
+function getFeedByAuthor(author){
+  let data = new FormData();
+  data.append("author",author);
+  fetchFromJson("services/findMessages.php",{method:'POST',body:data})
   .then(processFeed,errorFeed);
 }
 
@@ -25,7 +32,6 @@ function displayFeed(answer){
 }
 
 function displayMessage(message,element){
-  console.log(message);
   let d = document.createElement('div');
   d.className="message";
   let author = document.createElement('p');

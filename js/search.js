@@ -1,5 +1,4 @@
 function search(ev){
-  ev.preventDefault();
   removeSearch();
   removeErrors();
   fetchFromJson("services/findUsers.php",{method:'POST',body:new FormData(this)})
@@ -25,7 +24,6 @@ function errorSearch(error){
 }
 
 function displayUser(user,element){
-  console.log(user);
   let  d = document.createElement("div");
   d.className="user_as_search_result";
 
@@ -40,6 +38,7 @@ function displayUser(user,element){
   d.appendChild(userId);
   d.appendChild(pseudo);
   element.appendChild(d);
+  d.addEventListener('click',selectResult);
 }
 
 function displaySearchError(error,element){
@@ -53,4 +52,9 @@ function removeSearch(){
 }
 function removeErrors(){
   document.querySelector("#search_results_error").innerHTML="";
+}
+
+function selectResult(e){
+  document.forms.search_bar.searchedString.value = this.querySelector(".login_as_search_result").textContent;
+  removeSearch();
 }
