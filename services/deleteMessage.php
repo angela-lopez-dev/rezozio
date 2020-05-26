@@ -13,8 +13,8 @@ if(!$args->isValid()){
 try{
   $data = new DataLayer();
   $res = $data->deleteMessage($args->messageId,$userId);
-  if($res === true)
-    produceResult(true);
+  if($res !== false)
+    produceResult($res);
   else
     produceError("Impossible de supprimer le message, vous n'en n'êtes pas l'auteur ou bien il n'existe pas.");
 

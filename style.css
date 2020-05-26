@@ -35,28 +35,3 @@ html{
 .profile_picture{
   border-radius: 50%;
 }
-#profile_editor_container{
-  position:relative;
-  top:50px;
-  left:0;
-  background-color:red;
-  width:70%;
-  height:auto;
-  margin:auto;
-}
-
-#profile_editor_container{
-  padding:25px;
-}
-#profile_editor input{
-  margin-top:10px;
-}
-#profile_editor button {
-  margin-top: 10px;
-}
-#follows_list, #followers_list{
-  height:50%;
-  width:30%;
-  overflow-y: auto;
-
-}

@@ -6,6 +6,8 @@ window.addEventListener('load',initListeners);
 function initState(ev){
   console.log("initialising state");
   let user = document.body.dataset.user;
+  console.log("user : ");
+  console.log(user);
   if(user)
     etatConnecte(JSON.parse(user));
   else
@@ -19,22 +21,30 @@ document.forms.form_signup.addEventListener('submit',signup);
 document.querySelector('#logout').addEventListener('click',logout);
 document.forms.search_bar.addEventListener('input',search);
 document.forms.search_bar.addEventListener('submit',goToProfile);
+document.querySelector("#unfiltered_feed").addEventListener('click',visitorMode);
+document.querySelector("#filtered_feed").addEventListener('click',loggedInMode);
+document.querySelector("#post_message").addEventListener('click',openMessageEditor);
+document.forms.message_editor.addEventListener("submit",postMessage);
 }
 
 //passage en mode connecté
 function etatConnecte(user){
+  document.body.dataset.user=jsonUserToHTML(JSON.stringify(user));
   for(let e of document.querySelectorAll('.deconnecte')){e.hidden = true;}
   for(let e of document.querySelectorAll('.connecte')){e.hidden = false;}
   removeFeed();//les messages précédents sont effacés.
   getFilteredFeed();
+  showProfilePicture(user);
 }
 
 //passage en mode déconnecté
 function etatDeconnecte(){
   for(let e of document.querySelectorAll('.deconnecte')){e.hidden = false;}
   for(let e of document.querySelectorAll('.connecte')){e.hidden = true;}
+  document.body.removeAttribute('data-user');
   removeFeed(); //les messages précédents sont effacés.
-  getUnfilteredFeed();
+  removeMenu();
+  getFeed();
 }
 
 function login(ev){
@@ -45,10 +55,31 @@ function login(ev){
 }
 
 function processLogin(answer){
+  console.log(answer);
   if(answer.status =='ok')
-    etatConnecte(answer.result);
+    UserObjectFromId(answer.result);
   else
   document.forms.form_login.message.textContent = answer.message;
+}
+
+function UserObjectFromId(userId){
+  let data = new FormData();
+  data.append("userId",userId);
+  fetchFromJson("services/getUser.php",{method:'POST',body:data})
+  .then(processUserFromId,errorUserFromId);
+}
+
+function processUserFromId(answer){
+  console.log("creating user object from id ");
+  console.log(answer);
+  if(answer.status=="ok")
+    etatConnecte(answer.result);
+  else
+      document.forms.form_login.message.textContent =answer.message;
+}
+
+function errorUserFromId(error){
+    document.forms.form_login.message.textContent = answer.message;
 }
 
 function errorLogin(error){
@@ -75,4 +106,31 @@ function errorLogout(error){
 
 function removeFeed(){
   document.querySelector('#messages').innerHTML="";
+}
+
+function showProfilePicture(user){
+  let img,pseudo,userId,profile;
+  profile = document.querySelector("#profile");
+  img = document.createElement('img');
+  img.className='profile_picture';
+  img.src='services/getAvatar.php?userId='+user.userId;
+  img.alt='photo de profil';
+  img.addEventListener('click',goToOwnProfile);
+
+  pseudo = document.createElement('p');
+  pseudo.textContent=user.pseudo;
+  pseudo.className="menu_profile_pseudo";
+
+  userId = document.createElement('p');
+  userId.textContent="@"+user.userId
+  pseudo.className="menu_profile_userId";
+
+  profile.appendChild(img);
+  profile.appendChild(pseudo);
+  profile.appendChild(userId);
+}
+
+function jsonUserToHTML(json_user){
+  const regexp = /""/gi;
+  return json_user.replace(regexp,"&quot;");
 }

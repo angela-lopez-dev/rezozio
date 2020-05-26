@@ -13,21 +13,25 @@ if(isset($user))
  <meta charset="UTF-8" />
  <title>Rezozio</title>
  <link rel ="stylesheet" type="text/css" href="style/style.css">
- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
  <script src="js/fetchUtils.js"></script>
  <script src="js/feed.js"></script>
  <script src ="js/gestion_log.js"></script>
  <script src="js/signup.js"></script>
  <script src="js/search.js"></script>
  <script src="js/profile.js"></script>
+ <script src="js/menu.js"></script>
+ <script src="js/message.js"></script>
 
 </head>
 <?php
   echo "<body $dataUser>";
 ?>
+  <div id="home"></div>
+
+  <div class ="connecte" id="profile">
+  </div>
   <section>
     <form action ="" method=POST id="search_bar" autocomplete="off">
-      <span class="search_bar_icon"><i class="fa fa search"></i></span>
       <input type ="text" name="searchedString" placeholder="rechercher"/></br>
       <button type="submit" name="valid">OK</button></br>
     </form>
@@ -48,9 +52,9 @@ if(isset($user))
     <form method="POST" action="" id="form_signup">
       <fieldset>
         <legend>Créer un compte</legend>
-        <input type="text" name="userId" id="login" placeholder="login" required/></br>
-        <input type="text" name="pseudo" id="pseudo" placeholder="pseudo"required/></br>
-        <input type="password" name="password" id="password"  placeholder="password"required/></br>
+        <input type="text" name="userId" id="login" placeholder="login" maxlength="25" required/></br>
+        <input type="text" name="pseudo" id="pseudo" placeholder="pseudo" maxlegth="25" required/></br>
+        <input type="password" name="password" id="password" placeholder="password" maxlength="25" required/></br>
         <button type="submit" name="valid">OK</button></br>
         <output for="login password pseudo" name="message"></output>
       </form>
@@ -58,14 +62,44 @@ if(isset($user))
   </section>
 
   <section class ="connecte">
-    <button id="logout" name="logout">Se déconnecter</button></br>
+    <button id="logout" name="logout">se déconnecter</button></br>
     <div id ="logout_error">
+    </div>
+    <button id="unfiltered_feed">tous les messages</button></br>
+    <button id="filtered_feed" hidden=true>mes abonnements </button></br>
+    <button id="post_message">Publier un message </button></br>
+    <div id="message_editor_container" hidden=true>
+      <span class="close">&times;</span>
+      <form action="" method="POST" id="message_editor">
+        <textarea id="message_content" name="source"
+          rows="4" cols="70" maxlength="280" required>
+</textarea>
+<button type="submit" name="valid">Publier</button>
+<output name="output"></output>
+      </form>
     </div>
   </section>
   <section class ="stable">
     <section>
       <div id="userProfile"></div>
     </section>
+    <div id="profile_editor_container" hidden=true>
+      <span class="close">&times;</span>
+      <form action="" method="POST" id="profile_editor">
+        <legend>Modifier le profil</legend>
+        <label for="form_pp">Photo de profil</label>
+        <input type="file" name="image" id="form_pp"/></br>
+        <input type="text" name="pseudo" placeholder="pseudo"id="form_pseudo" maxlength="25"/></br>
+        <textarea id="form_description" name="description"
+          rows="5" cols="33" maxlength="1024">
+description
+</textarea>
+
+        <input type="password" name="password" placeholder="password" id="form_password"></br>
+        <button type="submit" name="valid">Valider les changements</button>
+        <output for ="image pseudo description password" name="output"></output>
+      </form>
+    </div>
 
   <div id="messages">
   </div>

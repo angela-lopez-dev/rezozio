@@ -219,6 +219,7 @@ EOD;
       on rezozio.messages.author = rezozio.users.login
       where (:author = '' or author = :author)
       and(:before=0 or id<:before)
+      order by messages.id desc
       limit :count;
 EOD;
       $stmt = $this->connexion->prepare($sql);
@@ -363,7 +364,7 @@ EOD;
     /**récupère les pseudo et login des utilisateurs auxquels l'utilisateur current est abonné */
     public function getSubscriptions($current){
       $sql =<<<EOD
-      select login,pseudo
+      select login as "userId",pseudo
       from rezozio.users
       join rezozio.subscriptions
       on users.login = subscriptions.target
@@ -379,13 +380,14 @@ EOD;
     public function deleteMessage($messageId,$current){
       $sql = <<<EOD
       delete from rezozio.messages
-      where id =:messageId and author = :current;
+      where id =:messageId and author = :current
+      returning id;
 EOD;
       $stmt = $this->connexion->prepare($sql);
       $stmt->bindValue(':messageId',$messageId,PDO::PARAM_INT);
       $stmt->bindValue(':current',$current,PDO::PARAM_STR);
       $stmt->execute();
-      return($stmt->rowCount()==1);
+      return($stmt->fetch());
     }
 
 /* ajoute une relation de blocage entre current (celui qui blocuqe) et target dans la table blockages
