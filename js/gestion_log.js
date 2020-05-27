@@ -30,6 +30,8 @@ document.forms.message_editor.addEventListener("submit",postMessage);
 //passage en mode connecté
 function etatConnecte(user){
   document.body.dataset.user=jsonUserToHTML(JSON.stringify(user));
+  document.forms.form_login.reset();
+  document.forms.form_signup.message.textContent="";
   for(let e of document.querySelectorAll('.deconnecte')){e.hidden = true;}
   for(let e of document.querySelectorAll('.connecte')){e.hidden = false;}
   removeFeed();//les messages précédents sont effacés.
@@ -58,6 +60,7 @@ function processLogin(answer){
   console.log(answer);
   if(answer.status =='ok')
     UserObjectFromId(answer.result);
+
   else
   document.forms.form_login.message.textContent = answer.message;
 }

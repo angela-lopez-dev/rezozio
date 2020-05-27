@@ -97,8 +97,9 @@ description
 
         <input type="password" name="password" placeholder="password" id="form_password"></br>
         <button type="submit" name="valid">Valider les changements</button>
-        <output for ="image pseudo description password" name="output"></output>
+        <output for ="image pseudo description password valid" name="output"></output>
       </form>
+      <button name="delete" id="delete_account">Supprimer mon compte</button>
     </div>
 
   <div id="messages">

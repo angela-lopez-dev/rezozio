@@ -211,7 +211,7 @@ EOD;
 /** trouve les messages filtrés par auteur, id de message et dans la limite de (count) messages
  *renvoie false si l'utilisateur est bloqué.*/
     public function findMessages($current,$author,$before,$count){
-      if($this->getBlockedStatus($current,$user))
+      if($this->getBlockedStatus($current,$author))
         return false;
       $sql =<<<EOD
       select messages.author,messages.id,messages.datetime,messages.content,users.pseudo
@@ -237,17 +237,12 @@ EOD;
       from rezozio.messages join rezozio.subscriptions
       on messages.author = subscriptions.target
       where subscriptions.follower = :current
+      and :before=0 or id < :before
+      limit :count;
 EOD;
-    if($before != 0)
-      $sql.=<<<EOD
-      intersect select id,author,content,datetime
-      from rezozio.messages where id < :before
-EOD;
-    $sql.=(" limit :count;");
     $stmt = $this->connexion->prepare($sql);
     $stmt->bindValue(':current',$current,PDO::PARAM_STR);
-    if($before != 0)
-      $stmt->bindValue(':before',$before,PDO::PARAM_STR);
+    $stmt->bindValue(':before',$before,PDO::PARAM_STR);
     $stmt->bindValue(':count',$count,PDO::PARAM_STR);
     $stmt->execute();
     $res = $stmt->fetchAll();

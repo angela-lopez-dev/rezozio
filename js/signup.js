@@ -6,8 +6,10 @@ function signup(ev){
 }
 
 function processSignup(answer){
-  if(answer.status=="ok")
+  if(answer.status=="ok"){
     document.forms.form_signup.message.textContent = "Votre compte a bien été créé. Veuillez vous connecter pour profiter de Rezozio !";
+    document.forms.form_signup.reset();
+  }
   else
     document.forms.form_signup.message.textContent = answer.message;
 }

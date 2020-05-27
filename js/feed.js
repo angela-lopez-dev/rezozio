@@ -34,8 +34,10 @@ function getFeed(before=null){
 
 function processFeed(answer){
   if(answer.status=="ok"){
-    displayFeed(answer);
     context(answer.args);
+    displayFeed(answer);
+    if(answer.result.length==0)
+      emptyFeedHandler();
   }
   else
     displayError(answer.message,document.querySelector("#messages"));
@@ -215,10 +217,29 @@ function errorDeleteMessage(error){
 }
 
 function convertIsoDate(date){
-  console.log(date);
   return date.substring(0,10).split('-').reverse().join('/') +" "+date.substring(11,16);
 }
 
-function reverseOrder(tab){
-
-}
+function emptyFeedHandler(){
+  let context,content,p;
+  context  = JSON.parse(document.body.dataset.context);
+  content ="Il n'y a aucun message à voir ici. ";
+  console.log(context);
+  switch(context.filters){
+    case(filters.NOFILTERS):
+      content += "Aucun utilisateur de Rezozio n'a publie de message pour l'instant.";
+      break;
+    case(filters.AUTHOR):
+      content += context.author+" n'a pas publie de message pour l'instant.";
+      break;
+    case(filters.SUBSCRIPTIONS):
+      content += " Aucun des utilisateurs que vous suivez n'a publie de message pour l'instant.";
+      break;
+    default:
+      content+=" Je ne sais pas pourquoi.";
+    }
+    p= document.createElement('p');
+    p.className='empty_feed_message';
+    p.textContent=content;
+    document.querySelector("#messages").appendChild(p);
+ }

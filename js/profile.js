@@ -50,7 +50,7 @@ return("services/getAvatar.php?size="+size+"&userId="+userId+"&r="+dateTime+r.to
 
 }
  function setupProfile(profile,element){
-   let userId,pseudo,description,subscriptions,isFollower,block,home,img,edit,getFollowers,getFollows;
+   let userId,pseudo,description,subscriptions,isFollower,block,blockedYou,home,img,edit,getFollowers,getFollows;
 
    userId = document.createElement("p");
    userId.className="profile_userId";
@@ -106,7 +106,14 @@ return("services/getAvatar.php?size="+size+"&userId="+userId+"&r="+dateTime+r.to
    block.addEventListener("click",unblockUser);
  }
  element.appendChild(block);
+ if(profile.blockedYou){
+   blockedYou=document.createElement('p');
+   blockedYou.className="blocked_status";
+   blockedYou.textContent="cet utilisateur vous a bloqué.";
+   element.appendChild(blockedYou);
  }
+
+}
 
 //mode connecté et le profil visité est le sien
  else if(JSON.parse(document.body.dataset.user).userId == profile.userId){
@@ -177,6 +184,7 @@ function displayProfileError(error){
   document.querySelector('#userProfile').appendChild(d);
 }
 function removeProfile(){
+  console.log("removing profile");
   document.querySelector("#userProfile").innerHTML="";
   document.querySelector("#home").innerHTML="";
 }
@@ -218,6 +226,8 @@ function openProfileEditing(){
   //removeProfile();
   document.querySelector("#profile_editor_container").hidden=false;
   document.querySelector("#profile_editor").addEventListener('submit',editProfile);
+  document.querySelector("#profile_editor_container span.close").addEventListener('click',closeEditProfile);
+  document.querySelector("#profile_editor_container #delete_account").addEventListener('click',deleteAccount);
 }
 
 function editProfile(ev){
@@ -242,6 +252,11 @@ function processEditProfile(answer){
 }
 function errorEditProfile(error){
   document.querySelector("#profile_editor").output.textContent="Impossible de valider les changement : "+error;
+}
+
+function closeEditProfile(ev){
+  document.forms.profile_editor.reset();
+  document.querySelector("#profile_editor_container").hidden = true;
 }
 
 function openFollowersList(){
@@ -384,6 +399,23 @@ function closeFollowsList(ev){
 
 }
 
-function debugEvent(ev){
-  console.log(this.textContent+"triggered!");
+function deleteAccount(ev){
+  console.log("deleting account");
+fetchFromJson("services/deleteUser.php",{method:'POST',credentials:'same-origin'})
+.then(processDeleteAccount,errorDeleteAccount);
+}
+
+function processDeleteAccount(answer){
+  console.log(answer);
+  if(answer.status=="ok"){
+    closeEditProfile();
+    removeProfile();
+    etatDeconnecte();
+  }
+  else
+    document.forms.profile_editor.output.textContent = answer.message;
+}
+
+function errorDeleteAccount(error){
+  document.forms.profile_editor.output.textContent = error;
 }

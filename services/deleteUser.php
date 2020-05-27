@@ -9,7 +9,6 @@ try{
   if($res === false)
     produceError("Impossible de supprimer l'utilisateur.");
   else{
-    produceResult($current);
     require("logout.php");
   }
 }catch(PDOException $e){
