@@ -1,13 +1,9 @@
-================================
-Technologies du Web 2 : Rézozio
-================================
-http://webtp.fil.univ-lille1.fr/~lopeza/projet2/accueil.php
-LOPEZ Angéla groupe 6.
+#Rezozio  
+A somewhat resembling twitter sibling built with PHP, postgreSQL and vanilla Javascript. 
 
-Difficultés rencontrées
------------------------
-* test de validité utilisent if($res) => si un utilisateur ou un id vaut 0 ou '0'
-le test renverra faux => tout refaire.
-* left joins
+*Note : this project is based on a school assignment. While the app matches said assignment requirements and is functionning as of 30/05/2020, the front-end needs refactoring.*
 
-getProfile renvoie 2 paramètres de + que dans la spécification mais c'est pour une fonctionnalité
+Credits
+-------
+This project makes extensive use of the PHP `RequestParameters` class to filter and sanitise HTTP request parameters. It was developped by Bruno Bogaert: Bruno.Bogaert[at]univ-lille1.fr.
+It is licensed under a Creative Commons (CC BY-NC-ND 2.0) license. For further information, please refer to [this document](https://creativecommons.org/licenses/by-nc-nd/2.0/legalcode "CC Common legal code").
