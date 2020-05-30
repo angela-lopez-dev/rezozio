@@ -1,4 +1,5 @@
 #Rezozio  
+
 A somewhat resembling twitter sibling built with PHP, postgreSQL and vanilla Javascript. 
 
 *Note : this project is based on a school assignment. While the app matches said assignment requirements and is functionning as of 30/05/2020, the front-end needs refactoring.*
