@@ -1,6 +1,7 @@
 ================================
 Technologies du Web 2 : Rézozio
 ================================
+http://webtp.fil.univ-lille1.fr/~lopeza/projet2/accueil.php
 LOPEZ Angéla groupe 6.
 
 Difficultés rencontrées

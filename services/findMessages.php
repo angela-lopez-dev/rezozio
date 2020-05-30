@@ -6,6 +6,8 @@ require_once('../lib/DataLayer.class.php');
 require_once('../lib/common_service.php');
 require_once("../lib/session_start.php");
 $current = $_SESSION['id']->userId;
+if($current === null)
+  $current = '';
 $args = new RequestParameters();
 $args->defineString('author');
 $args->defineInt('before',['default'=>0,'min_range'=>0]);

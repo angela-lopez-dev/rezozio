@@ -16,13 +16,10 @@ function postMessage(ev){
 
 function processPostMessage(answer){
   if(answer.status == "ok"){
+    let context = JSON.parse(document.body.dataset.context);
     document.forms.message_editor.output.textContent="message publie.";
-    //si on n'est pas en train de visiter le profil de quelqu'un d'autre que soi
-    if(document.querySelector("#userProfile").textContent=="")
-      //rafraîchir les messages
-      loggedInMode();
-    else if(JSON.parse(document.body.dataset.user).userId == document.querySelector("#userProfile p.profile_userId").textContent.substring(1))
-      goToOwnProfile();
+    removeFeed();
+    feedGivenContext(context);
   }
   else
     document.forms.message_editor.output.textContent= answer.message;

@@ -1,15 +1,18 @@
+
 html{
   font-size : medium;
   font-family : "Helvetica neue", Arial, sans-serif;
 }
 #userProfile{
-  width:70%;
-  background-color:white;
+  width:800px;
+  background-color: #dfebe8;
   margin:auto;
-  padding:2%
+  padding:2%;
+  font-size : larger;
+  visibility : hidden;
 }
 #messages{
-  width : 80%;
+  width : 800px;
   margin:auto;
   background-color : #dfebe8;
 }
@@ -20,9 +23,6 @@ html{
   margin : 2%;
 }
 
-#userProfile{
-  font-size:larger;
-}
 
 .author,.profile_userId{
   color : #54615f;
@@ -44,24 +44,43 @@ html{
   position:relative;
   top:50px;
   left:0;
-  background-color:red;
-  width:70%;
+  background-color:#dfebe8;
+  width:800px;
   height:auto;
   margin:auto;
 }
+
 
 #profile_editor_container{
   padding:25px;
 }
 #profile_editor input{
-  margin-top:10px;
+  border : none;
+  background-color : transparent;
+  border-bottom : 1px solid;
+  border-color : white;
+  height : 25px;
+  transition : height 0.5s ease-in-out;
+}
+#profile_editor input:focus{
+  height : 35px;
+  background-color : rgb(255,255,255,0.3);
 }
 #profile_editor button {
   margin-top: 10px;
 }
+#profile_editor textarea{
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+#profile_editor_container .close{
+  margin-left : 0;
+  margin-right : 20px;
+}
+
+}
 #follows_list, #followers_list{
-  height:50%;
-  width:30%;
+  width : max-content;
+  height : 150px;
   overflow-y: auto;
 }
 
@@ -81,7 +100,7 @@ button{
   font-size : medium;
 }
 
-.profile_picture, .menu_profile_userId, .delete_message, .close, .pseudo, .author{
+.profile_picture, .menu_profile_userId, .delete_message, .close, .pseudo, .author, .menu_profile_pseudo{
   cursor : pointer;
 }
 
@@ -100,6 +119,117 @@ resize: none;
 }
 
 .close{
+  float : left;
+  margin-left : 10px;
   font-size: xx-large;
   color :#5e6266 ;
 }
+
+input {
+  outline : none;
+  border : none;
+  border-bottom : 1px solid;
+  border-color : #5e7574;
+  margin-top : 15px;
+  height : 20px;
+  transition : border-color 0.3s ease-out ,height 0.5s ease-out;
+}
+input:focus{
+  border-color : #dfebe8; 
+  height : 30px;
+}
+
+fieldset{
+  border : 0;
+  outline : none;
+}
+
+legend{
+  font-style : italic;
+  }
+
+#search_bar{
+  width : 250px;
+  margin : 10px;
+  float : left;
+  top : 5%;
+}
+
+#search_bar input{
+  width : inherit;
+}
+
+
+.deconnecte{
+  float : right;
+  margin : 10px;
+}
+
+.connecte{
+  float : right;
+  margin-right : 10px;
+}
+
+#profile{
+  width : max-content;
+  padding : 10px;
+}
+h1{
+  font-size :large;
+  text-align : center;
+  color : #232928;
+}
+
+
+#followers_c,#follows_c{
+  padding-left : 30px;
+  text-align : center;
+  display: table-cell;
+}
+.buttons_wrapper_p{
+  width : max-content;
+  display : table;
+  margin : auto;
+}
+.subscribe_error{
+  font-style : italic;
+  text-align : center;
+}
+
+#menu_connecte{
+  width : 150px;
+  display : table;
+  vertical-align: middle;
+  
+}
+#logout{
+  display: table-cell;
+}
+
+#filtered_feed{
+  display : table-cell;
+}
+
+#post_message{
+  display : table-cell;
+}
+
+#message_editor_container{
+  background-color : #dfebe8;
+  z-index : 1;
+  width : 600px;
+  margin: auto;
+}
+
+#message_editor textarea{
+  margin : 25px;
+} 
+
+#message_editor button {
+  float: right;
+}
+
+#message_editor legend{
+  margin-left : 25px;
+}
+

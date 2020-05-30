@@ -1,21 +1,44 @@
-const INITIAL_FEED_BATCH_SIZE = 15;
+const INITIAL_FEED_BATCH_SIZE = 5;
 const filters = {
   AUTHOR: 'author',
   NOFILTERS: 'noFilters',
   SUBSCRIPTIONS: 'subscriptions'
 }
+const modes = {
+  LOGGEDIN: 'loggedIn',
+  VISITOR: 'visitor'
+}
+function updateButtons(mode){
+  let setToVisible,setToInvisible,text;
+if(mode == modes.LOGGEDIN){
+  text = 'tous les messages';
+  setToVisible = document.querySelector("#unfiltered_feed");
+  setToInvisible = document.querySelector("#filtered_feed");
+}
+else{
+  text = 'mes abonnements';
+  setToVisible = document.querySelector("#filtered_feed");
+  setToInvisible = document.querySelector("#unfiltered_feed");
+}
+  setToVisible.style.display='';
+  setToVisible.textContent= text;
+  setToInvisible.style.display = 'none';
+  setToInvisible.textContent= '';
+}
 function visitorMode(){
+  if(JSON.parse(document.body.dataset.context).filters === filters.AUTHOR)
+    removeProfile();
   removeFeed();
   getFeed();
-  document.querySelector("#unfiltered_feed").hidden = true;
-  document.querySelector("#filtered_feed").hidden = false;
+  updateButtons(modes.VISITOR)
 }
 
 function loggedInMode(){
+  if(JSON.parse(document.body.dataset.context).filters === filters.AUTHOR)
+    removeProfile();
   removeFeed();
   getFilteredFeed();
-  document.querySelector("#unfiltered_feed").hidden = false;
-  document.querySelector("#filtered_feed").hidden = true;
+  updateButtons(modes.LOGGEDIN)
 }
 
 function getFeed(before=null){
@@ -25,16 +48,19 @@ function getFeed(before=null){
   console.log("unfiltered feed");
   let init,data;
   data = new FormData();
-  data.append("before",before);
+  if(before !== null)
+    data.append("before",before);
   data.append("count",INITIAL_FEED_BATCH_SIZE);
-  init=(before===null)?{method:'POST',credentials:'same-origin'}:{method:'POST',credentials:'same-origin',body:data};
+  init={method:'POST',credentials:'same-origin',body:data};
   fetchFromJson("services/findMessages.php",init)
   .then(processFeed,errorFeed);
 }
 
 function processFeed(answer){
+  console.log(answer);
   if(answer.status=="ok"){
     context(answer.args);
+    displayFeedHeader();
     displayFeed(answer);
     if(answer.result.length==0)
       emptyFeedHandler();
@@ -48,9 +74,10 @@ function getFilteredFeed(before=null){
   document.body.dataset.context= jsonUserToHTML(JSON.stringify({filters:filters.SUBSCRIPTIONS}));
   let init,data;
   data = new FormData();
-  data.append("before",before);
+  if(before !== null)
+    data.append("before",before);
   data.append("count",INITIAL_FEED_BATCH_SIZE);
-  init=(before===null)?{method:'POST',credentials:'same-origin'}:{method:'POST',credentials:'same-origin',body:data};
+  init={method:'POST',credentials:'same-origin',body:data};
   fetchFromJson("services/findFollowedMessages.php",{method:'POST',credentials:'same-origin'})
   .then(processFeed,errorFeed);
 }
@@ -69,7 +96,29 @@ function getFeedByAuthor(author,before=null){
   .then(processFeed,errorFeed);
 }
 
+function displayFeedHeader(){
+  let feedType = document.createElement('h1');
+  let context = JSON.parse(document.body.dataset.context);
+  let text;
+  switch(context.filters){
+    case filters.NOFILTERS:
+      text = "Tous les messages de Rezozio";
+      break;
+    case filters.AUTHOR:
+      text = `Messages de ${context.author}`;
+      break;
+    case filters.SUBSCRIPTIONS:
+      text = "Messages des utilisateurs auxquels vous êtes abonné."
+      break;
+    default:
+      text ="Je ne sais pas trop quels messages sont affiches.."
+  }
+  feedType.textContent = text;
+  document.querySelector('#messages').appendChild(feedType);
+}
+
 function displayFeed(answer){
+
   for (let i = 0;i<answer.result.length;i++)
   {
       displayMessage(answer.result[i],document.querySelector("#messages"));
@@ -193,19 +242,7 @@ function processDeleteMessage(answer){
   let context = JSON.parse(document.body.dataset.context);
   removeFeed();
   if(answer.status == "ok"){
-    switch(context.filters){
-      case filters.NOFILTERS:
-        getFeed();
-        break;
-      case filters.SUBSCRIPTIONS:
-        getFilteredFeed();
-        break;
-      case filters.AUTHOR:
-        getFeedByAuthor(context.author);
-        break;
-      default:
-        getFeed();
-    }
+    feedGivenContext(context);
   }
 else{
   console.log(answer.message);
@@ -243,3 +280,19 @@ function emptyFeedHandler(){
     p.textContent=content;
     document.querySelector("#messages").appendChild(p);
  }
+
+function feedGivenContext(context){
+  switch(context.filters){
+    case filters.NOFILTERS:
+      getFeed();
+      break;
+    case filters.SUBSCRIPTIONS:
+      getFilteredFeed();
+      break;
+    case filters.AUTHOR:
+      getFeedByAuthor(context.author);
+      break;
+    default:
+      getFeed();
+  }
+}

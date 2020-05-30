@@ -32,11 +32,13 @@ function etatConnecte(user){
   document.body.dataset.user=jsonUserToHTML(JSON.stringify(user));
   document.forms.form_login.reset();
   document.forms.form_signup.message.textContent="";
+  document.querySelector("#menu_connecte").style.visibility="visible";
   for(let e of document.querySelectorAll('.deconnecte')){e.hidden = true;}
   for(let e of document.querySelectorAll('.connecte')){e.hidden = false;}
   removeFeed();//les messages précédents sont effacés.
   getFilteredFeed();
   showProfilePicture(user);
+  updateButtons(modes.LOGGEDIN);
 }
 
 //passage en mode déconnecté
@@ -46,7 +48,10 @@ function etatDeconnecte(){
   document.body.removeAttribute('data-user');
   removeFeed(); //les messages précédents sont effacés.
   removeMenu();
+  removeProfile();
   getFeed();
+  closeEditProfile();
+  updateButtons(modes.VISITOR);
 }
 
 function login(ev){
@@ -123,10 +128,13 @@ function showProfilePicture(user){
   pseudo = document.createElement('p');
   pseudo.textContent=user.pseudo;
   pseudo.className="menu_profile_pseudo";
+  pseudo.addEventListener('click',goToOwnProfile);
 
   userId = document.createElement('p');
   userId.textContent="@"+user.userId
-  pseudo.className="menu_profile_userId";
+  userId.className="menu_profile_userId";
+  userId.addEventListener('click',goToOwnProfile);
+
 
   profile.appendChild(img);
   profile.appendChild(pseudo);

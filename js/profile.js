@@ -50,11 +50,13 @@ return("services/getAvatar.php?size="+size+"&userId="+userId+"&r="+dateTime+r.to
 
 }
  function setupProfile(profile,element){
+   console.log("setting up profile");
+   element.style.visibility = "visible";
    let userId,pseudo,description,subscriptions,isFollower,block,blockedYou,home,img,edit,getFollowers,getFollows;
 
    userId = document.createElement("p");
    userId.className="profile_userId";
-   userId.textContent="@"+profile.userId;
+   userId.textContent=`@${profile.userId}`;
 
    pseudo = document.createElement("p");
    pseudo.className="profile_pseudo";
@@ -116,13 +118,15 @@ return("services/getAvatar.php?size="+size+"&userId="+userId+"&r="+dateTime+r.to
 }
 
 //mode connecté et le profil visité est le sien
- else if(JSON.parse(document.body.dataset.user).userId == profile.userId){
+ else if(document.body.dataset.hasOwnProperty("user") && JSON.parse(document.body.dataset.user).userId == profile.userId){
+   let wrapper = document.createElement('div');
+   wrapper.className="buttons_wrapper_p";
   //possibilité de modifier son profil
    edit = document.createElement("button");
    edit.id="edit_profile";
    edit.textContent="Modifier le profil";
    edit.addEventListener("click",openProfileEditing);
-   element.appendChild(edit);
+   wrapper.appendChild(edit);
   //afficher sa liste de followers
   let followers_c = document.createElement("div");
   followers_c.id="followers_c";
@@ -131,7 +135,7 @@ return("services/getAvatar.php?size="+size+"&userId="+userId+"&r="+dateTime+r.to
   getFollowers.textContent="abonnés";
   getFollowers.addEventListener("click",openFollowersList);
   followers_c.appendChild(getFollowers);
-  element.appendChild(followers_c);
+  wrapper.appendChild(followers_c);
 
   //afficher sa liste d'abonnements
   let follows_c = document.createElement("div");
@@ -141,7 +145,8 @@ return("services/getAvatar.php?size="+size+"&userId="+userId+"&r="+dateTime+r.to
   getFollows.textContent="abonnements";
   getFollows.addEventListener("click",openFollowsList);
   follows_c.appendChild(getFollows);
-  element.appendChild(follows_c);
+  wrapper.appendChild(follows_c);
+  element.appendChild(wrapper);
 
  }
  //bouton home
@@ -186,6 +191,7 @@ function displayProfileError(error){
 function removeProfile(){
   console.log("removing profile");
   document.querySelector("#userProfile").innerHTML="";
+  document.querySelector("#userProfile").style.visibility = "hidden";
   document.querySelector("#home").innerHTML="";
 }
 
@@ -231,6 +237,7 @@ function openProfileEditing(){
 }
 
 function editProfile(ev){
+  console.log("editing profile");
   ev.preventDefault();
   let data = new FormData(this);
   if(data.get("image"))
@@ -241,6 +248,7 @@ function editProfile(ev){
 }
 
 function processEditProfile(answer){
+  console.log(answer);
   if(answer.status=="ok"){
     document.querySelector("#profile_editor").output.textContent="Changements validés.";
     refreshProfile(document.querySelector(".profile_userId").textContent.substring(1));
@@ -293,6 +301,7 @@ function setupFollowsList(result){
   list.id="follows_list";
   let s = document.createElement("span");
   s.textContent="\u00D7";
+  s.className='close';
   s.addEventListener("click",closeFollowsList);
   list.appendChild(s);
 
@@ -333,6 +342,7 @@ function setupFollowersList(result){
   list.id="followers_list";
   let s = document.createElement("span");
   s.textContent="\u00D7";
+  s.className='close';
   s.addEventListener("click",closeFollowersList);
   list.appendChild(s);
   for(let i =0;i<result.length;i++){
@@ -390,13 +400,17 @@ function closeFollowersList(ev){
   if(document.querySelector("#followers_c").innerHTML.includes("followers_list")){
     document.querySelector("#followers_c").removeChild(document.querySelector("#followers_list"));
   }
+  if(document.querySelector('#userProfile').innerHTML.includes("subscribe_error"))
+
+    document.querySelector('.subscribe_error').innerHTML="";
 }
 
 function closeFollowsList(ev){
 
   if(document.querySelector("#follows_c").innerHTML.includes("follows_list"))
     document.querySelector("#follows_c").removeChild(document.querySelector("#follows_list"));
-
+  if(document.querySelector('#userProfile').innerHTML.includes("subscribe_error"))
+    document.querySelector('.subscribe_error').innerHTML="";
 }
 
 function deleteAccount(ev){
@@ -418,4 +432,8 @@ function processDeleteAccount(answer){
 
 function errorDeleteAccount(error){
   document.forms.profile_editor.output.textContent = error;
+}
+
+function debugEvent(ev){
+  console.log("debug");
 }

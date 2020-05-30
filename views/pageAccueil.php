@@ -30,16 +30,14 @@ if(isset($user))
 
   <div class ="connecte" id="profile">
   </div>
-  <section>
     <form action ="" method=POST id="search_bar" autocomplete="off">
       <input type ="text" name="searchedString" placeholder="rechercher"/></br>
       <button type="submit" name="valid">OK</button></br>
     </form>
     <div id="search_results">  </div>
     <div id="search_results_error">  </div>
-  </section>
 
-  <section class ="deconnecte">
+  <div class ="deconnecte">
     <form method="POST" action="" id ="form_login">
       <fieldset>
         <legend>Se connecter</legend>
@@ -59,30 +57,34 @@ if(isset($user))
         <output for="login password pseudo" name="message"></output>
       </form>
 
-  </section>
+  </div>
 
-  <section class ="connecte">
-    <button id="logout" name="logout">se déconnecter</button></br>
+  <div class ="connecte" id ="menu_connecte">
+    <button id="logout" name="logout">se déconnecter</button>
     <div id ="logout_error">
     </div>
-    <button id="unfiltered_feed">tous les messages</button></br>
-    <button id="filtered_feed" hidden=true>mes abonnements </button></br>
-    <button id="post_message">Publier un message </button></br>
-    <div id="message_editor_container" hidden=true>
-      <span class="close">&times;</span>
-      <form action="" method="POST" id="message_editor">
-        <textarea id="message_content" name="source"
-          rows="4" cols="70" maxlength="280" required>
+    <button id="unfiltered_feed">tous les messages</button>
+    <button id="filtered_feed" hidden=true>mes abonnements </button>
+    <button id="post_message">Publier un message </button>
+
+  </div>
+  <div id="message_editor_container" hidden=true>
+    <span class="close">&times;</span>
+    <form action="" method="POST" id="message_editor">
+      <fieldset>
+        <legend> Publier un message </legend>
+      <textarea id="message_content" name="source"
+        rows="4" cols="70" maxlength="280" required>
 </textarea>
 <button type="submit" name="valid">Publier</button>
+</fieldset>
 <output name="output"></output>
-      </form>
-    </div>
-  </section>
-  <section class ="stable">
-    <section>
+    </form>
+  </div>
+  <div class ="stable">
+    <div>
       <div id="userProfile"></div>
-    </section>
+    </div>
     <div id="profile_editor_container" hidden=true>
       <span class="close">&times;</span>
       <form action="" method="POST" id="profile_editor">
@@ -90,11 +92,9 @@ if(isset($user))
         <label for="form_pp">Photo de profil</label>
         <input type="file" name="image" id="form_pp"/></br>
         <input type="text" name="pseudo" placeholder="pseudo"id="form_pseudo" maxlength="25"/></br>
-        <textarea id="form_description" name="description"
-          rows="5" cols="33" maxlength="1024">
-description
+        <textarea id="form_description" name="description" placeholder="description" rows="5" cols="33" maxlength="1024">
 </textarea>
-
+</br>
         <input type="password" name="password" placeholder="password" id="form_password"></br>
         <button type="submit" name="valid">Valider les changements</button>
         <output for ="image pseudo description password valid" name="output"></output>
@@ -104,7 +104,7 @@ description
 
   <div id="messages">
   </div>
-</section>
+</div>
 
 </body>
 </html>

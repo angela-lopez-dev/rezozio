@@ -13,7 +13,7 @@ if(!$args->isValid()){
 }
 if($args->password =='' && $args->pseudo =='' && $args->description == ''){
   //aucun changement
-  produceResult($user);
+  produceResult("pas de paramètres");
   return;
 }
 try{

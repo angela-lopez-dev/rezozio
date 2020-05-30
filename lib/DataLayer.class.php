@@ -217,8 +217,10 @@ EOD;
       select messages.author,messages.id,messages.datetime,messages.content,users.pseudo
       from rezozio.messages join rezozio.users
       on rezozio.messages.author = rezozio.users.login
+      left join rezozio.blockages on blockages.blocking = users.login
       where (:author = '' or author = :author)
       and(:before=0 or id<:before)
+      and (blockages.target != :current or blockages.target is null)
       order by messages.id desc
       limit :count;
 EOD;
@@ -226,6 +228,7 @@ EOD;
       $stmt->bindValue(':author',$author,PDO::PARAM_STR);
       $stmt->bindValue(':before',$before,PDO::PARAM_INT);
       $stmt->bindValue(':count',$count,PDO::PARAM_INT);
+      $stmt->bindValue(':current',$current,PDO::PARAM_STR);
       $stmt->execute();
       return $stmt->fetchAll();
 
@@ -350,8 +353,8 @@ EOD;
     public function setProfile($current,$pseudo,$description,$password){
       if($pseudo !== "")
         $this->setPseudoFromProfile($current,$pseudo);
-      if($description !== "")
-        $this->setDescriptionFromProfile($pseudo,$description);
+      if($description !=="")
+        $this->setDescriptionFromProfile($current,$description);
       if($password !== "")
         $this->setPasswordFromProfile($current,$password);
 
