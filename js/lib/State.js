@@ -20,7 +20,10 @@ class State{
         return JSON.stringify(this._params).replace(regexp,"&quot;");
     }
 
-    init(init){
+    generate_static_content(static_content){
+    }
+
+    init(static_content){
         
     }
 
@@ -30,8 +33,3 @@ class State{
 
 
 }
-//blueprint for element class
-const init = {
-    previous_state : 'blabla',
-    elements : ['html tag','content','class','id','order','parent','event','function']
-};
