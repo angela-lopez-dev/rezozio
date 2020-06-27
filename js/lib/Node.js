@@ -4,8 +4,9 @@
  * static content creation.
  */
 class Node{
-    constructor( value){
+    constructor(value){
         this._value = value;
+        this._settings = null;
         this._parent = null;
         this._children = [];
     }
@@ -35,27 +36,26 @@ class Node{
     getParent(){
         return this._parent;
     }
-    /**
-     * @returns an HTML string representing the node object according to settings.
-     * @argument settings : an array containing
-     * - HTML tag
-     * - class
-     * - id
-     * with the array index matching the tree's element's depth.
-     */
-    toHTML(settings){
-        str = '';
+    toHTML(){
+        //recursive prototype for straight linear trees i.e nested divs
+        let str = '';
+        if(this.getChildren().length == 0)
+            return `<div>${this._value}</div>`
+        else
+            return '<div>'+this._value+(this.getChildren()[0].toHTML())+'</div>';
 
     }
 
 }
 
 try{
-    let node = new Node('hello');
-    node.addChild(new Node('world'));
-    console.log('lelo');
+    
+    let node = new Node('foo');
+    let bar = new Node('bar');
+    node.addChild(bar);
+    bar.addChild(new Node('pepe'));
     console.log(node);
-    console.log(node.getChildren[0]);
+    console.log(node.toHTML());
 
 
 }catch(e){
